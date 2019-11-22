@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19677034110c784d9b54b24fa39ae57, type: 3}
+  m_Name: 0 - Red Potion
+  m_EditorClassIdentifier: 
+  id: 0
+  itemCategory: 1
+  itemName: Red Potion
+  sellPrice: 1
+  uiPrefab: {fileID: 6745500401132315377, guid: 707e59de2c231724eb9edc6ce2f922ce,
+    type: 3}
+  dropPrefab: {fileID: 5287945365512521225, guid: bf7f52432428dad4683eae898cc9981b,
+    type: 3}
+  hpToHeal: 50
+  percentToHeal: 0

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3c6c08081477d40978b9ca61d2d0a9, type: 3}
+  m_Name: 3 - Starter Sword
+  m_EditorClassIdentifier: 
+  id: 3
+  itemCategory: 0
+  itemName: Starter Sword
+  sellPrice: 100
+  dropChance: 0
+  uiPrefab: {fileID: 6745500401132315377, guid: 673f94b693522644fb5e21694bd7300f,
+    type: 3}
+  dropPrefab: {fileID: 5287945365512521225, guid: b450cee8acff65e42a3f95675c935e63,
+    type: 3}
+  requiredStr: 3
+  requiredDex: 3
+  requiredInt: 3
+  requiredLuk: 3
+  equippedPrefab: {fileID: 5287945365512521225, guid: 8aa292f0ac3ec6f4998e4e38ca462054,
+    type: 3}
+  weaponType:
+    weaponStyle: 0
+    typeName: 
+    melee: 1
+    apType: str
+    classCanEquip: Warrior
+  damage: 10
+  attackRange: 1
+  attackSpeed: 1
