@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class TempCharacter : MonoBehaviour
 {
     public string classType = "Warrior";
-    public float str = 3.0f, dex = 3.0f, intel = 3.0f, luk = 3.0f;
+    public int str = 0, dex = 0, intel = 0, luk = 0;
     public int remainingAP = 5;
     public int rollAP = 7;
     public string characterName;

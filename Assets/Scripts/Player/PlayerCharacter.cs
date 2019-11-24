@@ -4,26 +4,39 @@ using UnityEngine;
 
 public sealed class PlayerCharacter : MonoBehaviour
 {
+    //Statuses
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int maxMana = 100;
     [SerializeField] private int curHealth = 100;
     [SerializeField] private int curMana = 100;
+
+    //Movement
     private float moveSpeed = 700.0f;
     private float jumpSpeed = 10.0f;
     private float climbSpeed = 500.0f;
-    private string playerName = "Player";
-    private int baseDamage = 1;
 
+    //Player specifics
+    private string playerName = "Player";
+    [SerializeField] PlayerClass playerClass;
+
+    //Attacking
+    private int baseDamage = 3;
+    private int maxDamage = 3;
+    private float baseAttackRange = 0.1f;
+    private float baseAttackSpeed = 1.0f;
+
+    //Levels
     [SerializeField] private int level = 1;
     [SerializeField] private int experience = 0;
     private int experienceToNextLevel = 100;
 
-    private int strength = 3;
-    private int dexterity = 3;
-    private int intelligence = 3;
-    private int luck = 3;
+    //AP
+    private int remainingAPPoints = 0;
+    private int originalRemaining = 0;
+    private Dictionary<string, int> originalAP;
+    private Dictionary<string, int> apPoints;
 
-    [SerializeField] PlayerClass playerClass;
+    //Useful things
     [SerializeField] PlayerCharacterUI ui;
     bool opened = false;
 
@@ -128,49 +141,66 @@ public sealed class PlayerCharacter : MonoBehaviour
         get => playerClass.ClassName;
 
     }
-    public PlayerCharacterUI UI { get=> ui; }
+    public PlayerCharacterUI UI { get => ui; }
     public bool Opened { get => ui.Showing(); }
     public int apSTR
     {
-        get => strength;
+        get => apPoints["str"];
 
         set
         {
-            strength = value;
+            apPoints["str"] = value;
         }
     }
     public int apDEX
     {
-        get => dexterity;
+        get => apPoints["dex"];
 
         set
         {
-            dexterity = value;
+            apPoints["dex"] = value;
         }
     }
     public int apINT
     {
-        get => intelligence;
+        get => apPoints["int"];
 
         set
         {
-            intelligence = value;
+            apPoints["int"] = value;
         }
     }
     public int apLUK
     {
-        get => luck;
+        get => apPoints["luk"];
 
         set
         {
-            luck = value;
+            apPoints["luk"] = value;
         }
     }
+    public int RemainingApPoints
+    {
+        get => remainingAPPoints;
+        set
+        {
+            remainingAPPoints = value;
+        }
+    }
+    public int MaxDamage
+    {
+        get => maxDamage;
+    }
+    public int BaseDamage { get => baseDamage; }
+    public float BaseAttackRange { get => baseAttackRange; }
+    public float BaseAttackSpeed { get => baseAttackSpeed; }
 
 
     private void Awake()
     {
         ui = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
+
+        originalAP = new Dictionary<string, int>();
     }
 
     public void TakeDamage(int damage)
@@ -186,9 +216,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     {
         if (experience >= experienceToNextLevel)
         {
-            level++;
-            experience = 0;
-            experienceToNextLevel *= 2;
+            LevelUp();
         }
     }
 
@@ -196,15 +224,17 @@ public sealed class PlayerCharacter : MonoBehaviour
     {
         CharacterData temp = CharacterCreationSave.LoadCreatedCharacter();
 
-        //AP
-        strength = (int)temp.str;
-        dexterity = (int)temp.dex;
-        intelligence = (int)temp.intel;
-        luck = (int)temp.luk;
+        //Load in the AP
+        apPoints = new Dictionary<string, int>
+        {
+            { "str", temp.str },
+            { "dex", temp.dex },
+            { "int", temp.intel },
+            { "luk", temp.luk }
+        };
 
         //Info
         playerName = temp.characterName;
-
         switch (temp.classType)
         {
             case "Warrior": playerClass = new Warrior();
@@ -213,29 +243,84 @@ public sealed class PlayerCharacter : MonoBehaviour
                 break;
         }
 
+        //Statuses
         maxHealth = Mathf.CeilToInt(playerClass.HPModifier * maxHealth);
         maxMana = Mathf.CeilToInt(playerClass.MPModifier * maxMana);
-
         curHealth = maxHealth;
         curMana = maxMana;
+
+        UpdateDamageRange();
     }
 
-    private int GetMainAPPoints()
+    public int GetMainAPPoints()
     {
-        switch (playerClass.MainAP)
+        return apPoints[playerClass.MainAP];
+    }
+
+    public int GetDamage()
+    {
+        int dmg = Mathf.RoundToInt(Random.Range(baseDamage, maxDamage + 1));
+
+        return dmg;
+    }
+
+    public void LevelUp()
+    {
+        level++;
+        experience = 0;
+        experienceToNextLevel *= 2;
+        remainingAPPoints += 5;
+        UpdateDamageRange();
+
+        ui.ToggleAPChanges(true);
+        ui.UpdateTexts();
+    }
+
+    private void UpdateDamageRange()
+    {
+        baseDamage = Mathf.RoundToInt(GetMainAPPoints() * level / 5);
+        maxDamage = baseDamage * 2;
+    }
+
+    public void IncAP(string apType)
+    {
+        if (remainingAPPoints > 0)
         {
-            case "str": return strength;
-            case "dex": return dexterity;
-            case "int": return intelligence;
-            case "luk": return luck;
-            default: return strength;
+            if (originalAP.Count == 0)
+            {
+                originalAP = new Dictionary<string, int>(apPoints);
+                originalRemaining = remainingAPPoints;
+            }
+
+            apPoints[apType]++;
+            remainingAPPoints--;
+            UpdateDamageRange();
+
+            ui.UpdateTexts();
         }
     }
 
-    public int BaseDamage()
+    public void DecAP(string apType)
     {
-        int dmg = baseDamage * GetMainAPPoints();
+        if (originalAP.Count == 0)
+        {
+            originalAP = new Dictionary<string, int>(apPoints);
+            originalRemaining = remainingAPPoints;
+        }
 
-        return dmg;
+        if (apPoints[apType] > originalAP[apType])
+        {
+            remainingAPPoints++;
+            apPoints[apType]--;
+            UpdateDamageRange();
+
+            ui.UpdateTexts();
+        }
+    }
+
+    public void CancelAP()
+    {
+        apPoints = new Dictionary<string, int>(originalAP);
+        remainingAPPoints = originalRemaining;
     }
 }

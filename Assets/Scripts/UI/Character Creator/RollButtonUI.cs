@@ -24,10 +24,10 @@ public class RollButtonUI : MonoBehaviour
             "STR", "DEX", "INT", "LUK"
         };
 
-        character.str = 3.0f;
-        character.dex = 3.0f;
-        character.intel = 3.0f;
-        character.luk = 3.0f;
+        character.str   = 0;
+        character.dex   = 0;
+        character.intel = 0;
+        character.luk   = 0;
 
         while (ap.Count > 0 && character.rollAP > 0)
         {
@@ -40,16 +40,16 @@ public class RollButtonUI : MonoBehaviour
                 switch (ap[whichAP])
                 {
                     case "STR":
-                        character.str = character.rollAP + 3;
+                        character.str = character.rollAP;
                         break;
                     case "DEX":
-                        character.dex = character.rollAP + 3;
+                        character.dex = character.rollAP;
                         break;
                     case "INT":
-                        character.intel = character.rollAP + 3;
+                        character.intel = character.rollAP;
                         break;
                     case "LUK":
-                        character.luk = character.rollAP + 3;
+                        character.luk = character.rollAP;
                         break;
                 }
             }
@@ -58,16 +58,16 @@ public class RollButtonUI : MonoBehaviour
                 switch (ap[whichAP])
                 {
                     case "STR":
-                        character.str = yeet + 3;
+                        character.str = yeet;
                         break;
                     case "DEX":
-                        character.dex = yeet + 3;
+                        character.dex = yeet;
                         break;
                     case "INT":
-                        character.intel = yeet + 3;
+                        character.intel = yeet;
                         break;
                     case "LUK":
-                        character.luk = yeet + 3;
+                        character.luk = yeet;
                         break;
                 }
             }

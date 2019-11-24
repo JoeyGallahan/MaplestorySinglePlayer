@@ -22,28 +22,28 @@ public class DecrementAPUI : MonoBehaviour
         switch (apType)
         {
             case 'S':
-                if (!character.rolled && character.str > 3)
+                if (!character.rolled && character.str > 0)
                 {
                     character.str--;
                     character.remainingAP++;
                 }
                 break;
             case 'D':
-                if (!character.rolled && character.dex > 3)
+                if (!character.rolled && character.dex > 0)
                 {
                     character.dex--;
                     character.remainingAP++;
                 }
                 break;
             case 'I':
-                if (!character.rolled && character.intel > 3)
+                if (!character.rolled && character.intel > 0)
                 {
                     character.intel--;
                     character.remainingAP++;
                 }
                 break;
             case 'L':
-                if (!character.rolled && character.luk > 3)
+                if (!character.rolled && character.luk > 0)
                 {
                     character.luk--;
                     character.remainingAP++;

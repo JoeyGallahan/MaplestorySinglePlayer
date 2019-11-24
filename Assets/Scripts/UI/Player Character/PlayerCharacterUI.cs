@@ -11,9 +11,12 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
     Vector3 offset;
     GameObject parentObj;
     GameObject expandParent;
+    GameObject apChangesParent;
 
     TextMeshProUGUI characterName;
+    TextMeshProUGUI remainingAP;
     TextMeshProUGUI strAmountText, dexAmountText, intAmountText, lukAmountText;
+    TextMeshProUGUI dmgRange;
 
     private void Awake()
     {
@@ -21,8 +24,13 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         parentObj = GameObject.FindGameObjectWithTag("CharacterCanvas");
         expandParent = GameObject.FindGameObjectWithTag("CharacterCanvasExpanded");
+        apChangesParent = GameObject.FindGameObjectWithTag("APChanges");
 
         characterName = GameObject.FindGameObjectWithTag("CharacterInfoName").GetComponent<TextMeshProUGUI>();
+
+        remainingAP = GameObject.FindGameObjectWithTag("RemainingAP").GetComponent<TextMeshProUGUI>();
+
+        dmgRange = GameObject.FindGameObjectWithTag("DamageRange").GetComponent<TextMeshProUGUI>();
 
         strAmountText = GameObject.FindGameObjectWithTag("StrAmount").GetComponent<TextMeshProUGUI>();
         dexAmountText = GameObject.FindGameObjectWithTag("DexAmount").GetComponent<TextMeshProUGUI>();
@@ -34,6 +42,7 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
     {
         Show(false);
         expandParent.SetActive(false);
+        ToggleAPChanges(false);
     }
 
     public void Show(bool maybe)
@@ -55,14 +64,36 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
         }
     }
 
-    private void UpdateTexts()
+    public void UpdateTexts()
     {
         characterName.SetText(player.PlayerName);
+
+        remainingAP.SetText(player.RemainingApPoints.ToString());
+
+        string dmgText = player.BaseDamage.ToString() + " - " + player.MaxDamage.ToString();
+
+        dmgRange.SetText(dmgText);
 
         strAmountText.SetText(player.apSTR.ToString());
         dexAmountText.SetText(player.apDEX.ToString());
         intAmountText.SetText(player.apINT.ToString());
         lukAmountText.SetText(player.apLUK.ToString());
+    }
+
+    public void SaveAP()
+    {
+        ToggleAPChanges(false);
+    }
+
+    public void CancelAP()
+    {
+        player.CancelAP();
+        UpdateTexts();
+    }
+
+    public void ToggleAPChanges(bool maybe)
+    {
+        apChangesParent.SetActive(maybe);
     }
 
     #region IBeginDragHandler implementation

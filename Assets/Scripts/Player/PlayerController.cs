@@ -103,12 +103,12 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                horInput = playerCharacter.MoveSpeed * Time.deltaTime;
+                horInput = playerCharacter.MoveSpeed;
                 transform.rotation = facingRight;
             }
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
-                horInput = -playerCharacter.MoveSpeed * Time.deltaTime;
+                horInput = -playerCharacter.MoveSpeed;
                 transform.rotation = facingLeft;
             }
             else
@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
                 horInput = 0.0f;
             }
 
-            rb.velocity = new Vector2(horInput, rb.velocity.y);
+            rb.velocity = new Vector2(horInput * Time.deltaTime, rb.velocity.y);
         }
     }
 
@@ -197,13 +197,13 @@ public class PlayerController : MonoBehaviour
 
     private void BasicAttack()
     {
-        float attackRange = 0.1f;
-        int attackDamage = 5;
+        float attackRange = playerCharacter.BaseAttackRange;
+        int attackDamage = playerCharacter.GetDamage();
 
         if (equippedWeapon)
         {
             attackRange = equippedWeapon.AttackRange;
-            attackDamage = equippedWeapon.Damage;
+            attackDamage = equippedWeapon.Damage * playerCharacter.GetMainAPPoints();
         }
 
         RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer);
@@ -241,7 +241,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAttackTime()
     {
-        float attackSpeed = 5.0f;
+        float attackSpeed = playerCharacter.BaseAttackSpeed;
         if (equippedWeapon)
         {
             attackSpeed = equippedWeapon.AttackSpeed;

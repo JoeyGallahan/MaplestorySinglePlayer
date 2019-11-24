@@ -20,10 +20,10 @@ public class ResetButtonUI : MonoBehaviour
     void TaskOnClick()
     {
         character.remainingAP = 5;
-        character.str = 3.0f;
-        character.dex = 3.0f;
-        character.intel = 3.0f;
-        character.luk = 3.0f;
+        character.str = 0;
+        character.dex = 0;
+        character.intel = 0;
+        character.luk = 0;
 
         character.rolled = false;
     }

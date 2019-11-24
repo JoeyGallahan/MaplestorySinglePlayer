@@ -29,6 +29,11 @@ TagManager:
   - IntAmount
   - LukAmount
   - CharacterInfoName
+  - RemainingAP
+  - IncAP
+  - DecAP
+  - APChanges
+  - DamageRange
   layers:
   - Default
   - TransparentFX
