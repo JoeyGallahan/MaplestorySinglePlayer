@@ -13,6 +13,9 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
     GameObject expandParent;
     GameObject apChangesParent;
 
+    //Equips
+    EquipmentUI weaponEquip;
+
     TextMeshProUGUI characterName;
     TextMeshProUGUI remainingAP;
     TextMeshProUGUI strAmountText, dexAmountText, intAmountText, lukAmountText;
@@ -36,6 +39,8 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
         dexAmountText = GameObject.FindGameObjectWithTag("DexAmount").GetComponent<TextMeshProUGUI>();
         intAmountText = GameObject.FindGameObjectWithTag("IntAmount").GetComponent<TextMeshProUGUI>();
         lukAmountText = GameObject.FindGameObjectWithTag("LukAmount").GetComponent<TextMeshProUGUI>();
+
+        weaponEquip = GameObject.FindGameObjectWithTag("EquipWeapon").GetComponent<EquipmentUI>();
     }
 
     private void Start()
@@ -83,6 +88,8 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
     public void SaveAP()
     {
         ToggleAPChanges(false);
+        player.SaveAP();
+        UpdateTexts();
     }
 
     public void CancelAP()
@@ -94,6 +101,17 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
     public void ToggleAPChanges(bool maybe)
     {
         apChangesParent.SetActive(maybe);
+    }
+
+    public void AddEquip(string type, int id)
+    {
+        switch (type)
+        {
+            case "Weapon": weaponEquip.AddEquip(id);
+                break;
+        }
+
+        UpdateTexts();
     }
 
     #region IBeginDragHandler implementation

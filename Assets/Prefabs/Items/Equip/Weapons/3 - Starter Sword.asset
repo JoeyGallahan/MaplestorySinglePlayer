@@ -17,7 +17,7 @@ MonoBehaviour:
   itemName: Starter Sword
   sellPrice: 100
   dropChance: 0
-  uiPrefab: {fileID: 6745500401132315377, guid: 673f94b693522644fb5e21694bd7300f,
+  uiPrefab: {fileID: 3133256055161240523, guid: 673f94b693522644fb5e21694bd7300f,
     type: 3}
   dropPrefab: {fileID: 5287945365512521225, guid: b450cee8acff65e42a3f95675c935e63,
     type: 3}

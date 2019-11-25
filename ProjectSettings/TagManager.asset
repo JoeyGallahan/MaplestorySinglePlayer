@@ -34,6 +34,14 @@ TagManager:
   - DecAP
   - APChanges
   - DamageRange
+  - EquipWeapon
+  - EquipHead
+  - EquipCape
+  - EquipGlove
+  - EquipBody
+  - EquipFeet
+  - EquipRing1
+  - EquipRing2
   layers:
   - Default
   - TransparentFX

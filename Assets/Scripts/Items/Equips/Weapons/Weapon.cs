@@ -20,6 +20,12 @@ public class Weapon : Equipment
 
         Debug.Log("Equipping weapon: " + itemName);
 
+        GameObject weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
+
+        GameObject newWeapon = (GameObject)Instantiate(equippedPrefab, weaponSlot.transform);
+
+        player.UpdateEquip("Weapon", id);
+
         inventory.RemoveItem(id);
     }
 }

@@ -42,12 +42,10 @@ public class PlayerController : MonoBehaviour
     PlayerInventory inventory;
     GainsUI gainsUI;
     GameObject weaponSlot;
-    Weapon equippedWeapon;
 
     private void Awake()
     {
         playerCharacter = GetComponent<PlayerCharacter>();
-        playerCharacter.LoadCharacterCreation();
         movement.z = transform.position.z;
 
         rb = GetComponent<Rigidbody2D>();
@@ -68,6 +66,11 @@ public class PlayerController : MonoBehaviour
         weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
 
         gainsUI = GameObject.FindGameObjectWithTag("GainsCanvas").GetComponent<GainsUI>();
+
+    }
+    private void Start()
+    {
+        playerCharacter.LoadCharacterCreation();
     }
 
     // Update is called once per frame
@@ -200,10 +203,10 @@ public class PlayerController : MonoBehaviour
         float attackRange = playerCharacter.BaseAttackRange;
         int attackDamage = playerCharacter.GetDamage();
 
-        if (equippedWeapon)
+        if (playerCharacter.Equips.GetWeapon() != null)
         {
-            attackRange = equippedWeapon.AttackRange;
-            attackDamage = equippedWeapon.Damage * playerCharacter.GetMainAPPoints();
+            attackRange = playerCharacter.Equips.GetWeapon().AttackRange;
+            attackDamage = playerCharacter.Equips.GetWeapon().Damage * playerCharacter.GetMainAPPoints();
         }
 
         RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer);
@@ -242,9 +245,9 @@ public class PlayerController : MonoBehaviour
     private void UpdateAttackTime()
     {
         float attackSpeed = playerCharacter.BaseAttackSpeed;
-        if (equippedWeapon)
+        if (playerCharacter.Equips.GetWeapon() != null)
         {
-            attackSpeed = equippedWeapon.AttackSpeed;
+            attackSpeed = playerCharacter.Equips.GetWeapon().AttackSpeed;
         }
 
         if (!canAttack)

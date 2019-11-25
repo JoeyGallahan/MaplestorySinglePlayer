@@ -11,18 +11,19 @@ public sealed class PlayerCharacter : MonoBehaviour
     [SerializeField] private int curMana = 100;
 
     //Movement
-    private float moveSpeed = 700.0f;
+    private float moveSpeed = 500.0f;
     private float jumpSpeed = 10.0f;
     private float climbSpeed = 500.0f;
 
     //Player specifics
     private string playerName = "Player";
     [SerializeField] PlayerClass playerClass;
+    EquippedItems equips;
 
     //Attacking
     private int baseDamage = 3;
     private int maxDamage = 3;
-    private float baseAttackRange = 0.1f;
+    private float baseAttackRange = 0.25f;
     private float baseAttackSpeed = 1.0f;
 
     //Levels
@@ -194,6 +195,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     public int BaseDamage { get => baseDamage; }
     public float BaseAttackRange { get => baseAttackRange; }
     public float BaseAttackSpeed { get => baseAttackSpeed; }
+    public EquippedItems Equips { get => equips; }
 
 
     private void Awake()
@@ -201,6 +203,7 @@ public sealed class PlayerCharacter : MonoBehaviour
         ui = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
 
         originalAP = new Dictionary<string, int>();
+        equips = GetComponent<EquippedItems>();
     }
 
     public void TakeDamage(int damage)
@@ -278,7 +281,7 @@ public sealed class PlayerCharacter : MonoBehaviour
 
     private void UpdateDamageRange()
     {
-        baseDamage = Mathf.RoundToInt(GetMainAPPoints() * level / 5);
+        baseDamage = Mathf.RoundToInt(GetMainAPPoints() * level / 5) + equips.GetEquipDamage();
         maxDamage = baseDamage * 2;
     }
 
@@ -318,9 +321,23 @@ public sealed class PlayerCharacter : MonoBehaviour
         }
     }
 
+    public void SaveAP()
+    {
+        originalAP = new Dictionary<string, int>();
+    }
+
     public void CancelAP()
     {
         apPoints = new Dictionary<string, int>(originalAP);
         remainingAPPoints = originalRemaining;
+
+        UpdateDamageRange();
+    }
+
+    public void UpdateEquip(string type, int id)
+    {
+        equips.UpdateEquip(type, id);
+        UpdateDamageRange();
+        ui.AddEquip(type, id);
     }
 }
