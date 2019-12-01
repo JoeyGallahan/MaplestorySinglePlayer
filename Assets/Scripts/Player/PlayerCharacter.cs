@@ -11,7 +11,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     [SerializeField] private int curMana = 100;
 
     //Movement
-    private float moveSpeed = 500.0f;
+    private float moveSpeed = 700.0f;
     private float jumpSpeed = 10.0f;
     private float climbSpeed = 500.0f;
 

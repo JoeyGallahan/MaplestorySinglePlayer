@@ -42,6 +42,8 @@ TagManager:
   - EquipFeet
   - EquipRing1
   - EquipRing2
+  - TeleportPlat
+  - Area
   layers:
   - Default
   - TransparentFX
@@ -56,7 +58,7 @@ TagManager:
   - Player
   - Enemy
   - Item
-  - 
+  - NPC
   - 
   - 
   - 

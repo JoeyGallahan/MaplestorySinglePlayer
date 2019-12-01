@@ -6,7 +6,9 @@ public class EnemyCharacter : MonoBehaviour
 {
     EnemyInventory inventory;
 
-    [SerializeField] string name;
+    Animator animations;
+
+    [SerializeField] string enemyName;
     [SerializeField] int experience = 100;
     [SerializeField] int health = 100;
     [SerializeField] int level = 1;
@@ -15,6 +17,8 @@ public class EnemyCharacter : MonoBehaviour
     private void Awake()
     {
         inventory = GetComponent<EnemyInventory>();
+
+        animations = GetComponentInChildren<Animator>();
     }
 
     public int TouchDamage
@@ -32,6 +36,7 @@ public class EnemyCharacter : MonoBehaviour
         if (health <= 0)
         {
             health = 0;
+            animations.SetInteger("Health", 0);
             Die();
 
             return experience;
@@ -43,7 +48,7 @@ public class EnemyCharacter : MonoBehaviour
     private void Die()
     {
         inventory.DropItems(transform.position);
-        Destroy(this.gameObject);
+        Destroy(this.gameObject, animations.GetCurrentAnimatorStateInfo(0).length);
     }
 
 }

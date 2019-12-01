@@ -13,12 +13,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool grounded = true;
     [SerializeField] bool climbing = false;
     [SerializeField] bool touchingRope = false;
+    [SerializeField] bool touchingTeleport = false;
 
     //Movement and rotations
     Vector3 movement = Vector3.zero;
     float horInput = 0.0f;
     Quaternion facingLeft = Quaternion.Euler(Vector3.zero);
     Quaternion facingRight = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    GameObject nextTeleportLocation;
+    Vector3 teleportCameraLoc;
 
     //Layers
     int playerLayer;
@@ -59,6 +62,7 @@ public class PlayerController : MonoBehaviour
         defaultGravity = rb.gravityScale;
 
         Physics2D.IgnoreLayerCollision(playerLayer, itemLayer, true);
+        Physics2D.IgnoreLayerCollision(playerLayer, 13, true);
 
         inventory = GetComponent<PlayerInventory>();
         itemDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
@@ -139,7 +143,6 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (Input.GetKey(KeyCode.DownArrow))
                 {
-                    Debug.Log("Hello");
                     rb.velocity = new Vector2(0, -playerCharacter.ClimbSpeed * Time.deltaTime);
                 }
                 else
@@ -206,7 +209,6 @@ public class PlayerController : MonoBehaviour
         if (playerCharacter.Equips.GetWeapon() != null)
         {
             attackRange = playerCharacter.Equips.GetWeapon().AttackRange;
-            attackDamage = playerCharacter.Equips.GetWeapon().Damage * playerCharacter.GetMainAPPoints();
         }
 
         RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer);
@@ -290,6 +292,16 @@ public class PlayerController : MonoBehaviour
         PickupItem();
         ToggleInventory();
         ToggleCharacterUI();
+        Teleport();
+    }
+    
+    private void Teleport()
+    {
+        if (touchingTeleport && Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            transform.position = nextTeleportLocation.transform.position;
+            Camera.main.transform.position = teleportCameraLoc; 
+        }
     }
 
     private void UpdateTimings()
@@ -362,6 +374,14 @@ public class PlayerController : MonoBehaviour
         {
             itemTouching = collision.gameObject;
         }
+        else if (tag.Equals("TeleportPlat"))
+        {
+            touchingTeleport = true;
+            Teleport tele = collision.gameObject.GetComponent<Teleport>();
+
+            nextTeleportLocation = tele.otherTeleportPlat;
+            teleportCameraLoc = tele.cameraLoc; 
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -380,6 +400,14 @@ public class PlayerController : MonoBehaviour
         {
             itemTouching = collision.gameObject;
         }
+        else if (tag.Equals("TeleportPlat"))
+        {
+            touchingTeleport = true;
+            Teleport tele = collision.gameObject.GetComponent<Teleport>();
+
+            nextTeleportLocation = tele.otherTeleportPlat;
+            teleportCameraLoc = tele.cameraLoc;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -396,6 +424,10 @@ public class PlayerController : MonoBehaviour
         else if (tag.Equals("Item"))
         {
             itemTouching = null;
+        }
+        else if (tag.Equals("TeleportPlat"))
+        {
+            touchingTeleport = false;
         }
     }
 }
