@@ -20,9 +20,7 @@ public class HotkeyController : MonoBehaviour
     //Adds the skill or item to a hotkey slot. To be used by the DragHandlers.
     public void DraggedToHotkey(Transform parent, int id, Hotkey.HotkeyType type)
     {
-        GameObject prefab = itemDB.GetSprite(id); //Get the UI prefab for the item or skill
-
-        hotkeysByName[parent.name].AddToKey(prefab, id, type); //Get the appropriate hotkey slot and add it.
+        hotkeysByName[parent.name].AddToKey(id, type); //Get the appropriate hotkey slot and add it.
     }
 
     //Stores all the hotkey information that we need. To be used at the very beginning

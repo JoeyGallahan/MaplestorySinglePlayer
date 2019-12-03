@@ -23,8 +23,9 @@ public class HotkeyUI : MonoBehaviour
     }
 
     //Adds an item or skill to the Hotkey
-    public void AddToKey(GameObject prefab, int id, Hotkey.HotkeyType type)
+    public void AddToKey(int id, Hotkey.HotkeyType type)
     {
+        Debug.Log("YEET");
         //If there was already something in this slot, destroy it
         if (key.hotkeyType != Hotkey.HotkeyType.EMPTY)
         {
@@ -33,14 +34,10 @@ public class HotkeyUI : MonoBehaviour
 
         key.UpdateHotkey(id, type); //Updates the hotkey with the type (skill or item) and the id
 
-        //Puts the UI object in the hotkey slot
-        GameObject newObj;
-        newObj = (GameObject)Instantiate(prefab, transform);
-
         //If you're adding an item to this slot, we want to store the text so we can update it later
         if (type.Equals(Hotkey.HotkeyType.ITEM))
         {
-            itemAmountText = newObj.GetComponentInChildren<TextMeshProUGUI>();
+            itemAmountText = GetComponentInChildren<ItemID>().GetComponentInChildren<TextMeshProUGUI>();
         }
         else //otherwise, it's a skill and we set it to null
         {
@@ -54,9 +51,11 @@ public class HotkeyUI : MonoBehaviour
         //If there is actually an item in this slot
         if (itemAmountText != null)
         {
+            Debug.Log("Hello : " + key.id);
             //Check to see if the inventory still contains an item with this id (might have used all of them)
             if (inventory.ContainsID(key.id))
             {
+                Debug.Log(inventory.GetAmountByID(key.id).ToString());
                 //If the inventory says you have a different amount of this item than the hotkey says
                 if (inventory.GetAmountByID(key.id).ToString() != itemAmountText.text)
                 {

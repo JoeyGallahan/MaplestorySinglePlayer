@@ -317,7 +317,6 @@ public sealed class PlayerCharacter : MonoBehaviour
     {
         originalAP = new Dictionary<string, int>();
         ui.UpdateTexts();
-        ui.ToggleAPChanges(false);
     }
 
     public void CancelAP()
@@ -327,7 +326,6 @@ public sealed class PlayerCharacter : MonoBehaviour
 
         UpdateDamageRange();
         ui.UpdateTexts();
-        ui.ToggleAPChanges(false);
     }
 
     public void UpdateEquip(string type, int id)
