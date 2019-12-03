@@ -39,11 +39,12 @@ public class PlayerController : MonoBehaviour
 
     float defaultGravity;
 
+    UIController uiController;
+
     //Inventory
     [SerializeField] GameObject itemTouching;
     ItemDB itemDB;
     PlayerInventory inventory;
-    GainsUI gainsUI;
     GameObject weaponSlot;
 
     private void Awake()
@@ -66,10 +67,9 @@ public class PlayerController : MonoBehaviour
 
         inventory = GetComponent<PlayerInventory>();
         itemDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
+        uiController = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
 
         weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
-
-        gainsUI = GameObject.FindGameObjectWithTag("GainsCanvas").GetComponent<GainsUI>();
 
     }
     private void Start()
@@ -80,8 +80,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Movement();
-
         //Actions
         PerformActions();
         UpdateTimings();
@@ -94,6 +92,12 @@ public class PlayerController : MonoBehaviour
             inventory.DebugInv();
         }
     }
+
+    private void FixedUpdate()
+    {
+        Movement();
+    }
+
     private bool CanMove()
     {
         if (!climbing && canAttack)
@@ -222,7 +226,7 @@ public class PlayerController : MonoBehaviour
             if(expGained > 0)
             {
                 playerCharacter.Experience += expGained;
-                gainsUI.AddGain(expGained.ToString(), "XP");
+                uiController.AddGain(expGained.ToString(), "XP");
             }
 
         }
@@ -237,7 +241,7 @@ public class PlayerController : MonoBehaviour
             {
                 ItemID item = itemTouching.GetComponent<ItemID>();
 
-                gainsUI.AddGain(itemDB.GetItemName(item.itemID), "Item");
+                uiController.AddGain(itemDB.GetItemName(item.itemID), "Item");
                 inventory.AddToInventory(item.itemID);
                 item.Pickup();
             }
@@ -290,8 +294,6 @@ public class PlayerController : MonoBehaviour
     {
         Attack();
         PickupItem();
-        ToggleInventory();
-        ToggleCharacterUI();
         Teleport();
     }
     
@@ -318,13 +320,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void ToggleCharacterUI()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            playerCharacter.UI.Show(!playerCharacter.Opened);
-        }
-    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

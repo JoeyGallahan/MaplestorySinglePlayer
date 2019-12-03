@@ -44,6 +44,7 @@ TagManager:
   - EquipRing2
   - TeleportPlat
   - Area
+  - SkillCanvas
   layers:
   - Default
   - TransparentFX

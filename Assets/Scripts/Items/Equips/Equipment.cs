@@ -18,9 +18,8 @@ public abstract class Equipment : Item
     protected override void UpdatePlayerData()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
+        //characterUI = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
         inventory = player.GetComponent<PlayerInventory>();
         equipInventory = player.GetComponent<EquippedItems>();
-
-        //characterUI = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
     }
 }

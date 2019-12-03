@@ -18,6 +18,19 @@ public class PlayerInventory : MonoBehaviour
         db = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
     }
 
+    //Returns whether or not an item actually exists in your inventory
+    public bool ContainsID(int id)
+    {
+        return itemIDsAndAmount.ContainsKey(id);
+    }
+
+    //Gets the amount of a certain item you have (eg: 5 red potions)
+    public int GetAmountByID(int id)
+    {
+        return itemIDsAndAmount[id];
+    }
+
+    //Adds an item to your inventory
     public void AddToInventory(int id)
     {
         if(itemIDsAndAmount.ContainsKey(id))
@@ -32,6 +45,7 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    //Prints out all of the items in the dictionary incase there are any issues with the UI
     public void DebugInv()
     {
         string inventory = "";
@@ -44,16 +58,19 @@ public class PlayerInventory : MonoBehaviour
         Debug.Log(inventory);
     }
 
+    //Removes an item from your inventory. Defaulted to removing 1, but can be customized for dropping more
     public void RemoveItem(int id, int amount = 1)
     {
+        //If this item exists in the inventory
         if (itemIDsAndAmount.ContainsKey(id))
         {
-            itemIDsAndAmount[id] -= amount;
-            inventoryUI.UpdateGridItemAmount(id, itemIDsAndAmount[id]);
+            itemIDsAndAmount[id] -= amount; //Decrease the amount of this item
+            inventoryUI.UpdateGridItemAmount(id, itemIDsAndAmount[id]); //Update the inventory UI
 
+            //If you've used all of this item
             if (itemIDsAndAmount[id] <= 0)
             {
-                itemIDsAndAmount.Remove(id);
+                itemIDsAndAmount.Remove(id); //Remove it from your inventory completely.
             }
         }
     }

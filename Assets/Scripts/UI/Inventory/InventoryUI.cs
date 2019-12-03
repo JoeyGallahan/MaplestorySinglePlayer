@@ -5,10 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class InventoryUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class InventoryUI : MonoBehaviour
 {
     GameObject parentObj;
-    Vector3 offset;
 
     InventoryGrid equipGrid, useGrid, etcGrid;
     ItemDB itemDB;
@@ -97,26 +96,4 @@ public class InventoryUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
                 break;
         }
     }
-
-    #region IBeginDragHandler implementation
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        offset.x = Input.mousePosition.x - transform.position.x;
-        offset.y = Input.mousePosition.y - transform.position.y;
-    }
-    #endregion
-
-    #region IDragHandler implementation
-    public void OnDrag(PointerEventData eventData)
-    {
-        transform.position = Input.mousePosition - offset;
-    }
-    #endregion
-
-    #region IEndDragHandler implementation
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        offset = Vector3.zero;
-    }
-    #endregion
 }

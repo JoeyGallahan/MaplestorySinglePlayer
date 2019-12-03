@@ -16,7 +16,7 @@ public class Weapon : Equipment
 
     public override void Action()
     {
-        UpdatePlayerData();
+        UpdatePlayerData(); //Gets the updated information of the player.
 
         Debug.Log("Equipping weapon: " + itemName);
 

@@ -11,7 +11,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     [SerializeField] private int curMana = 100;
 
     //Movement
-    private float moveSpeed = 700.0f;
+    private float moveSpeed = 350.0f;
     private float jumpSpeed = 10.0f;
     private float climbSpeed = 500.0f;
 
@@ -31,16 +31,14 @@ public sealed class PlayerCharacter : MonoBehaviour
     [SerializeField] private int experience = 0;
     private int experienceToNextLevel = 100;
 
+    PlayerCharacterUI ui;
+
     //AP
     private int remainingAPPoints = 0;
     private int originalRemaining = 0;
     private Dictionary<string, int> originalAP;
     private Dictionary<string, int> apPoints;
-
-    //Useful things
-    [SerializeField] PlayerCharacterUI ui;
-    bool opened = false;
-
+    
     public int MaxHealth
     {
         get => maxHealth;
@@ -142,8 +140,6 @@ public sealed class PlayerCharacter : MonoBehaviour
         get => playerClass.ClassName;
 
     }
-    public PlayerCharacterUI UI { get => ui; }
-    public bool Opened { get => ui.Showing(); }
     public int apSTR
     {
         get => apPoints["str"];
@@ -201,7 +197,6 @@ public sealed class PlayerCharacter : MonoBehaviour
     private void Awake()
     {
         ui = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
-
         originalAP = new Dictionary<string, int>();
         equips = GetComponent<EquippedItems>();
     }
@@ -274,9 +269,8 @@ public sealed class PlayerCharacter : MonoBehaviour
         experienceToNextLevel *= 2;
         remainingAPPoints += 5;
         UpdateDamageRange();
-
-        ui.ToggleAPChanges(true);
         ui.UpdateTexts();
+        ui.ToggleAPChanges(true);
     }
 
     private void UpdateDamageRange()
@@ -298,9 +292,8 @@ public sealed class PlayerCharacter : MonoBehaviour
             apPoints[apType]++;
             remainingAPPoints--;
             UpdateDamageRange();
-
-            ui.UpdateTexts();
         }
+        ui.UpdateTexts();
     }
 
     public void DecAP(string apType)
@@ -316,14 +309,15 @@ public sealed class PlayerCharacter : MonoBehaviour
             remainingAPPoints++;
             apPoints[apType]--;
             UpdateDamageRange();
-
-            ui.UpdateTexts();
         }
+        ui.UpdateTexts();
     }
 
     public void SaveAP()
     {
         originalAP = new Dictionary<string, int>();
+        ui.UpdateTexts();
+        ui.ToggleAPChanges(false);
     }
 
     public void CancelAP()
@@ -332,6 +326,8 @@ public sealed class PlayerCharacter : MonoBehaviour
         remainingAPPoints = originalRemaining;
 
         UpdateDamageRange();
+        ui.UpdateTexts();
+        ui.ToggleAPChanges(false);
     }
 
     public void UpdateEquip(string type, int id)

@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using TMPro;
 
-public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class PlayerCharacterUI : MonoBehaviour
 {
     PlayerCharacter player;
 
@@ -113,26 +112,4 @@ public class PlayerCharacterUI : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         UpdateTexts();
     }
-
-    #region IBeginDragHandler implementation
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        offset.x = Input.mousePosition.x - transform.position.x;
-        offset.y = Input.mousePosition.y - transform.position.y;
-    }
-    #endregion
-
-    #region IDragHandler implementation
-    public void OnDrag(PointerEventData eventData)
-    {
-        transform.position = Input.mousePosition - offset;
-    }
-    #endregion
-
-    #region IEndDragHandler implementation
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        offset = Vector3.zero;
-    }
-    #endregion
 }
