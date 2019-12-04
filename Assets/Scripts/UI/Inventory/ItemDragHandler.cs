@@ -89,6 +89,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             if (!rect1.Equals(rect2) && rect1.Overlaps(rect2, true))
             {
                 parent = hotkeyController.hotkeyUIs[rect2].transform; //Sets the parent of the dragged item to the transform of the hotkey slot
+                return;
             }
         }
     }

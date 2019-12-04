@@ -25,7 +25,7 @@ public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (dragging) //The OnDrag() method is only called while the mouse is moving, so this lets us check where it is while it's being held.
         {
-            CheckForOverlap();
+            //CheckForOverlap();
         }
     }
 
@@ -60,11 +60,10 @@ public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         //If you've landed on a hotkey slot
         if (parent.tag.Equals("Hotkey"))
         {
+            hotkeyController.DraggedToHotkey(parent, skillID.skillID, Hotkey.HotkeyType.SKILL); //Update the UI with what we've just added
             objDragged.transform.SetParent(parent, false); //Set this objects parent to the hotkey slot
             objDragged.transform.localPosition = Vector3.zero; //Make it line up in the middle
             objDragged.transform.SetAsFirstSibling();
-
-            hotkeyController.DraggedToHotkey(parent, skillID.skillID, Hotkey.HotkeyType.SKILL); //Update the UI with what we've just added
         }
         else 
         {
@@ -85,10 +84,13 @@ public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         //Checks all the hotkey slots for an overlap
         foreach (Rect rect2 in hotkeyController.hotkeyRects)
         {
+            //bool overlapping = (rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y);
+            //Debug.Log(rect2.x + "," + rect2.y + " : " + overlapping);
             //Make sure it's not overlapping itself
             if (!rect1.Equals(rect2) && rect1.Overlaps(rect2, true))
             {
                 parent = hotkeyController.hotkeyUIs[rect2].transform; //Sets the parent of the dragged item to the transform of the hotkey slot
+                return;
             }
         }
     }
