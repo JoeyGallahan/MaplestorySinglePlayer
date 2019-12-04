@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Skill : ScriptableObject
 {
     protected PlayerCharacter player; //The actual player. This is used for things like finding enemies/party members in range.
     protected int enemyLayer = 11;
+    protected UIController uiController;
 
     [SerializeField] public int id = -1; //The id of the skill
     [SerializeField] public string skillName; //The name of the skill
-    [SerializeField] public string classType; //The class that is allowed to use this skill
+    [SerializeField] public string classRequired; //The class a player must be to use this skill 
+    [SerializeField] protected WeaponType.WeaponStyle[] requiredWeapons; //The weapons that need to be equipped to use this skill
     [SerializeField] public int levelRequired; //The level required to use this skill
     [SerializeField] public string description; //The description that will show on the skill UI
     [SerializeField] public GameObject skillSprite; //The sprite that will show on the UI
@@ -27,6 +30,7 @@ public abstract class Skill : ScriptableObject
     protected virtual void UpdatePlayerData()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
+        uiController = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
     }
     protected virtual void PlayEnemySkill()
     {

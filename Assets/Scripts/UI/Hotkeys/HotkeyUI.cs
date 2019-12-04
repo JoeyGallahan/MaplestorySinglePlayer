@@ -25,7 +25,6 @@ public class HotkeyUI : MonoBehaviour
     //Adds an item or skill to the Hotkey
     public void AddToKey(int id, Hotkey.HotkeyType type)
     {
-        Debug.Log("YEET");
         //If there was already something in this slot, destroy it
         if (key.hotkeyType != Hotkey.HotkeyType.EMPTY)
         {
@@ -51,11 +50,9 @@ public class HotkeyUI : MonoBehaviour
         //If there is actually an item in this slot
         if (itemAmountText != null)
         {
-            Debug.Log("Hello : " + key.id);
             //Check to see if the inventory still contains an item with this id (might have used all of them)
             if (inventory.ContainsID(key.id))
             {
-                Debug.Log(inventory.GetAmountByID(key.id).ToString());
                 //If the inventory says you have a different amount of this item than the hotkey says
                 if (inventory.GetAmountByID(key.id).ToString() != itemAmountText.text)
                 {
@@ -71,7 +68,7 @@ public class HotkeyUI : MonoBehaviour
 
     private void EmptySlot()
     {
-        GameObject toDestroy = GetComponentInChildren<ItemID>().gameObject;
+        GameObject toDestroy;
 
         //If it's an item, we want to go off the ItemID to get the proper gameobject to destroy
         if (key.hotkeyType == Hotkey.HotkeyType.ITEM)
@@ -81,6 +78,7 @@ public class HotkeyUI : MonoBehaviour
         }
         else
         {
+            toDestroy = GetComponentInChildren<SkillID>().gameObject;
         }
 
         //Reset the values of the hotkey

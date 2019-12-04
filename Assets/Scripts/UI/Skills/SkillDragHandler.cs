@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     GameObject objDragged; //The UI object being dragged
     RectTransform draggedRect; //The rect of the UI object being dragged. Used for checking overlaps
-    ItemID itemID; //The ID of the item being dragged
+    SkillID skillID; //The ID of the item being dragged
     Transform parent; //Where the item is being dragged onto
     HotkeyController hotkeyController; //For dragging onto a hotkey
     bool dragging = false; //Used so we can check overlaps more often.
 
     private void Awake()
     {
-        itemID = GetComponent<ItemID>();
+        skillID = GetComponent<SkillID>();
 
         hotkeyController = GameObject.FindGameObjectWithTag("HotkeyWrapper").GetComponent<HotkeyController>();
 
@@ -64,7 +64,7 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             objDragged.transform.localPosition = Vector3.zero; //Make it line up in the middle
             objDragged.transform.SetAsFirstSibling();
 
-            hotkeyController.DraggedToHotkey(parent, itemID.itemID, Hotkey.HotkeyType.ITEM); //Update the UI with what we've just added
+            hotkeyController.DraggedToHotkey(parent, skillID.skillID, Hotkey.HotkeyType.SKILL); //Update the UI with what we've just added
         }
         else 
         {
