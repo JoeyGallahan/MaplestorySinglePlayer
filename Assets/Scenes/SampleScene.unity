@@ -7518,7 +7518,6 @@ GameObject:
   - component: {fileID: 830022531}
   - component: {fileID: 830022534}
   - component: {fileID: 830022533}
-  - component: {fileID: 830022532}
   m_Layer: 0
   m_Name: mp bar
   m_TagString: Untagged
@@ -7545,18 +7544,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 420, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &830022532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 830022530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 213a2ab9b7e285c4b8612b397244df52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &830022533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8193,6 +8180,7 @@ GameObject:
   - component: {fileID: 892166736}
   - component: {fileID: 892166734}
   - component: {fileID: 892166735}
+  - component: {fileID: 892166737}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -8300,6 +8288,20 @@ MonoBehaviour:
     melee: 0
     apType: dex
     classCanEquip: Bowman
+--- !u!114 &892166737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892166730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e42a04e1d6b75748bf3a4a317fe9d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skills:
+  - {fileID: 11400000, guid: 062aea8238c931542b562b1012717796, type: 2}
 --- !u!1 &894612570
 GameObject:
   m_ObjectHideFlags: 0

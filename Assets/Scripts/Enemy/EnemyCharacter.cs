@@ -14,6 +14,8 @@ public class EnemyCharacter : MonoBehaviour
     [SerializeField] int level = 1;
     [SerializeField] int touchDamage = 10;
 
+    bool dead;
+
     private void Awake()
     {
         inventory = GetComponent<EnemyInventory>();
@@ -26,19 +28,24 @@ public class EnemyCharacter : MonoBehaviour
         get => touchDamage;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
+        //This is here and not in take damage because of skills that hit twice. 
+        //If a skill hits twice, it calls the TakeDamage() twice, which would in turn make it drop double the items and cause a whole bunch of issues.
+        if (health <= 0 && !dead)
+        {
+            health = 0;
+            animations.SetInteger("Health", 0);
+            dead = true;
+            Die();
+        }
     }
 
     public int TakeDamage(int damage)
     {
         health -= damage;
-        if (health <= 0)
+        if (health <= 0 && !dead) //Dont want to return the experience twice (this can/should also be handled when the actual method is called, but this is just a safety check)
         {
-            health = 0;
-            animations.SetInteger("Health", 0);
-            Die();
-
             return experience;
         }
 

@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     float defaultGravity;
 
     UIController uiController;
+    SkillDB skillDB;
 
     //Inventory
     [SerializeField] GameObject itemTouching;
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviour
 
         inventory = GetComponent<PlayerInventory>();
         itemDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
+        skillDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<SkillDB>();
         uiController = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
 
         weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
@@ -90,6 +92,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             inventory.DebugInv();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            skillDB.GetSkillByID(0).UseSkill();
         }
     }
 
@@ -157,31 +164,37 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Initializes climbing
     private void InitClimb()
     {
-        climbing = true;
-        rb.gravityScale = 0.0f;
-        rb.velocity = Vector2.zero;
-        Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, true);
+        climbing = true;  //you are now climbing
+        rb.gravityScale = 0.0f; //you're no longer affected by gravity
+        rb.velocity = Vector2.zero; //You have no more velocity. just boom. stopped.
+        Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, true); //Ignore collision with platforms
     }
 
+    //Makes the player jump
     private void Jump()
     {
+        //If you're on the ground or climbing and you press the jump key
         if ((grounded || climbing) && Input.GetKey(KeyCode.Space))
         {
-            grounded = false;
+            grounded = false; //You're no longer grounded
             rb.velocity = Vector2.zero; //prevents the player from shooting up into the sky if they were already moving up on the rope
-            if (climbing)
+
+            if (climbing) //If you were climbing
             {
-                climbing = false;
-                rb.gravityScale = defaultGravity;
-                Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, false);
+                climbing = false; //You're not climbing anymore
+                rb.gravityScale = defaultGravity; //Reset the gravity 
+                Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, false); //You can collide with platforms again
             }
-            Vector2 jump = new Vector2(0, playerCharacter.JumpSpeed);
-            rb.AddForce(jump, ForceMode2D.Impulse);
+
+            Vector2 jump = new Vector2(0, playerCharacter.JumpSpeed); //Get a nice force for your jump
+            rb.AddForce(jump, ForceMode2D.Impulse); //apply the force to the player
         }
     }
     
+    //Updates the players jumping, walking, and idle animations
     private void UpdateAnimation()
     {
         animations.SetBool("Grounded", grounded);
@@ -191,48 +204,53 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Determines if you can use a basic attack and will call the appropriate methods to do so
     private void Attack()
     {
-        if (canAttack)
+        if (canAttack) //If it is possible for you to do this
         {
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) //And you hit the proper keys
             {
                 movement = Vector3.zero; //stop all movement
-                animations.SetBool("Attacking", true);
-                BasicAttack();
-                canAttack = false;
+                animations.SetBool("Attacking", true); //Start the attack animation
+                BasicAttack(); //Actually attack
+                canAttack = false; //Can't immediately attack until the cooldown is up
             }
         }
     }
 
+    //Performs a basic attack
     private void BasicAttack()
     {
-        float attackRange = playerCharacter.BaseAttackRange;
-        int attackDamage = playerCharacter.GetDamage();
+        float attackRange = playerCharacter.BaseAttackRange; //Get your base attack range
+        int attackDamage = playerCharacter.GetDamage(); //Get your base damage
 
-        if (playerCharacter.Equips.GetWeapon() != null)
+        if (playerCharacter.Equips.GetWeapon() != null) //If you have a weapon equipped
         {
-            attackRange = playerCharacter.Equips.GetWeapon().AttackRange;
+            attackRange = playerCharacter.Equips.GetWeapon().AttackRange; //Update the range to the range of the weapon.
+            //We dont need to update the attack damage because that's already accounted for in the GetDamage() method
         }
 
-        RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer);
+        RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer); //Find an enemy within range
 
+        //If you hit an enemy
         if (hit.transform != null)
         {
-            EnemyController enemyHit = hit.transform.gameObject.GetComponent<EnemyController>();
+            EnemyController enemyHit = hit.transform.gameObject.GetComponent<EnemyController>(); //Get the enemy controller
 
-            int expGained = enemyHit.TakeDamage(attackDamage, -weaponSlot.transform.right);
+            int expGained = enemyHit.TakeDamage(attackDamage, -weaponSlot.transform.right); //Make the enemy take damage and get the exp earned from this
 
-            if(expGained > 0)
+            if(expGained > 0) //If you actually gained some exp
             {
-                playerCharacter.Experience += expGained;
-                uiController.AddGain(expGained.ToString(), "XP");
+                playerCharacter.Experience += expGained; //Add it to your player
+                uiController.AddGain(expGained.ToString(), "XP"); //Show it on the Gains UI
             }
 
         }
 
     }
 
+    //Pickup the item you are touching
     private void PickupItem()
     {
         if (itemTouching != null)
@@ -241,13 +259,14 @@ public class PlayerController : MonoBehaviour
             {
                 ItemID item = itemTouching.GetComponent<ItemID>();
 
-                uiController.AddGain(itemDB.GetItemName(item.itemID), "Item");
-                inventory.AddToInventory(item.itemID);
-                item.Pickup();
+                uiController.AddGain(itemDB.GetItemName(item.itemID), "Item"); //Shows the item you picked up in the Gains UI
+                inventory.AddToInventory(item.itemID); //Adds the item to the inventory
+                item.Pickup(); //Removes the physical item from the scene
             }
         }
     }
 
+    //Updates the time since the player last used a basic attack. Essentially a cooldown.
     private void UpdateAttackTime()
     {
         float attackSpeed = playerCharacter.BaseAttackSpeed;
@@ -269,6 +288,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Updates the time since you were last damaged by an enemy. This prevents the player from basically being spam-attacked
     private void UpdateDamageTime()
     {
         if (damaged)
@@ -283,6 +303,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Calls the appropriate methods to update the player's movement
     private void Movement()
     {
         HorizontalInput();
@@ -290,6 +311,7 @@ public class PlayerController : MonoBehaviour
         Jump();
     }
 
+    //Calls the appropriate methods to perform simple actions like basic attacks, picking up items, and moving to new maps
     private void PerformActions()
     {
         Attack();
@@ -297,6 +319,7 @@ public class PlayerController : MonoBehaviour
         Teleport();
     }
     
+    //Move to another map
     private void Teleport()
     {
         if (touchingTeleport && Input.GetKeyDown(KeyCode.UpArrow))
@@ -306,6 +329,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Updates the timings for simple things like taking damage and basic attacks
     private void UpdateTimings()
     {
         UpdateDamageTime();

@@ -26,17 +26,6 @@ public class EnemyController : MonoBehaviour
         damageUI = GetComponent<EnemyDamageUI>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public int TakeDamage(int damage, Vector2 dir)
     {
         Knockback(dir);

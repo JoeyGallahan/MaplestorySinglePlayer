@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94de13b56ae11148b1900e22593f051, type: 3}
+  m_Name: 0 - DoubleSlash
+  m_EditorClassIdentifier: 
+  id: 0
+  skillName: Double Slash
+  classType: 
+  levelRequired: 1
+  description: Hits a single enemy twice.
+  skillSprite: {fileID: 0}
+  range: 2
+  skillAnimation: {fileID: 0}
+  playerSkillPrefab: {fileID: 0}
+  enemySkillPrefab: {fileID: 5815180175044248706, guid: f3776fdf4ec8f4e468a7685bbdff0081,
+    type: 3}
+  targets:
+  - {fileID: 0}
+  damagePercent: 100
