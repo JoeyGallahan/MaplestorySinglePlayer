@@ -60,11 +60,11 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         //If you've landed on a hotkey slot
         if (parent.tag.Equals("Hotkey"))
         {
+            hotkeyController.DraggedToHotkey(parent, itemID.itemID, Hotkey.HotkeyType.ITEM); //Update the UI with what we've just added
+
             objDragged.transform.SetParent(parent, false); //Set this objects parent to the hotkey slot
             objDragged.transform.localPosition = Vector3.zero; //Make it line up in the middle
             objDragged.transform.SetAsFirstSibling();
-
-            hotkeyController.DraggedToHotkey(parent, itemID.itemID, Hotkey.HotkeyType.ITEM); //Update the UI with what we've just added
         }
         else 
         {

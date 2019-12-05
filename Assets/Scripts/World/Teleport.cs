@@ -7,6 +7,7 @@ public class Teleport : MonoBehaviour
     TeleportID id;
     public GameObject otherTeleportPlat;
     public Vector3 cameraLoc;
+    [SerializeField] float cameraOffsetY;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class Teleport : MonoBehaviour
 
                 Transform area = t.transform.parent;
                 cameraLoc = area.position;
+                cameraLoc.y += cameraOffsetY;
                 cameraLoc.z = -10f;
 
                 return;

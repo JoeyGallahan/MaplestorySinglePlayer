@@ -45,6 +45,8 @@ TagManager:
   - TeleportPlat
   - Area
   - SkillCanvas
+  - EffectsCanvas
+  - FadeToBlack
   layers:
   - Default
   - TransparentFX

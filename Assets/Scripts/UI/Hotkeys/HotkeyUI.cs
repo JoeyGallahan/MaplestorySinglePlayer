@@ -26,15 +26,19 @@ public class HotkeyUI : MonoBehaviour
     public void AddToKey(int id, Hotkey.HotkeyType type)
     {
         //If there was already something in this slot, destroy it
-        if (key.hotkeyType != Hotkey.HotkeyType.EMPTY)
+        if (!key.hotkeyType.Equals(Hotkey.HotkeyType.EMPTY))
         {
             EmptySlot();
         }
 
         key.UpdateHotkey(id, type); //Updates the hotkey with the type (skill or item) and the id
+    }
 
+    //Updates the UI text for the item in your hotkey slot
+    public void UpdateKeyItemAmount()
+    {
         //If you're adding an item to this slot, we want to store the text so we can update it later
-        if (type.Equals(Hotkey.HotkeyType.ITEM))
+        if (key.hotkeyType.Equals(Hotkey.HotkeyType.ITEM))
         {
             itemAmountText = GetComponentInChildren<ItemID>().GetComponentInChildren<TextMeshProUGUI>();
         }
@@ -42,11 +46,7 @@ public class HotkeyUI : MonoBehaviour
         {
             itemAmountText = null;
         }
-    }
 
-    //Updates the UI text for the item in your hotkey slot
-    public void UpdateKeyItemAmount()
-    {
         //If there is actually an item in this slot
         if (itemAmountText != null)
         {

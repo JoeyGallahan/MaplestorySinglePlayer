@@ -5,15 +5,15 @@ using UnityEngine;
 public sealed class PlayerCharacter : MonoBehaviour
 {
     //Statuses
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int maxMana = 100;
-    [SerializeField] private int curHealth = 100;
-    [SerializeField] private int curMana = 100;
+    private int maxHealth = 100;
+    private int maxMana = 100;
+    private int curHealth = 100;
+    private int curMana = 100;
 
     //Movement
-    private float moveSpeed = 350.0f;
-    private float jumpSpeed = 10.0f;
-    private float climbSpeed = 500.0f;
+    [SerializeField] private float moveSpeed = 5.0f;
+    [SerializeField] private float jumpSpeed = 10.0f;
+    [SerializeField] private float climbSpeed = 5.0f;
 
     //Player specifics
     private string playerName = "Player";

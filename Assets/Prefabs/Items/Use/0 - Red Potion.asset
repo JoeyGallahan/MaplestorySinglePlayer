@@ -16,7 +16,8 @@ MonoBehaviour:
   itemCategory: 1
   itemName: Red Potion
   sellPrice: 1
-  uiPrefab: {fileID: 6745500401132315377, guid: 707e59de2c231724eb9edc6ce2f922ce,
+  dropChance: 0
+  uiPrefab: {fileID: 6960997109447256400, guid: 707e59de2c231724eb9edc6ce2f922ce,
     type: 3}
   dropPrefab: {fileID: 5287945365512521225, guid: bf7f52432428dad4683eae898cc9981b,
     type: 3}

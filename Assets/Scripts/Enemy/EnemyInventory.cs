@@ -12,9 +12,12 @@ public class EnemyInventory : MonoBehaviour
 
         foreach(int i in itemIds)
         {
-            GameObject item = db.GetItemByID(i).DropPrefab;
-            Instantiate(item, position, Quaternion.identity);
-            item.GetComponent<Rigidbody2D>().AddForce(new Vector2(0.0f, -25.0f), ForceMode2D.Impulse);
+            GameObject item = (GameObject)Instantiate(db.GetItemByID(i).DropPrefab, position, Quaternion.identity);
+
+            float randomXForce = Random.Range(-5.0f, 5.0f);
+
+            //Max them seem like they kind of burst out of the enemy
+            item.GetComponent<Rigidbody2D>().AddForce(new Vector2(randomXForce, 2.0f), ForceMode2D.Impulse);
         }
     }
 }

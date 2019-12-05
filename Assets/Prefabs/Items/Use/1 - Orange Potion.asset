@@ -16,7 +16,8 @@ MonoBehaviour:
   itemCategory: 1
   itemName: Orange Potion
   sellPrice: 1
-  uiPrefab: {fileID: 6745500401132315377, guid: d21cef6bd6b94024eb71590256d8be8c,
+  dropChance: 0
+  uiPrefab: {fileID: 6258031240021276452, guid: d21cef6bd6b94024eb71590256d8be8c,
     type: 3}
   dropPrefab: {fileID: 5856741009972573028, guid: 6552e0a4ed11417438e4bc9b8111ca07,
     type: 3}

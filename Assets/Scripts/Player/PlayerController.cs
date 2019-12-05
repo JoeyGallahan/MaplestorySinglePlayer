@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
     UIController uiController;
     SkillDB skillDB;
 
+    bool teleporting = false;
+
     //Inventory
     [SerializeField] GameObject itemTouching;
     ItemDB itemDB;
@@ -93,11 +95,6 @@ public class PlayerController : MonoBehaviour
         {
             inventory.DebugInv();
         }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            skillDB.GetSkillByID(0).UseSkill();
-        }
     }
 
     private void FixedUpdate()
@@ -134,7 +131,7 @@ public class PlayerController : MonoBehaviour
                 horInput = 0.0f;
             }
 
-            rb.velocity = new Vector2(horInput * Time.deltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(horInput, rb.velocity.y);
         }
     }
 
@@ -150,11 +147,11 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.UpArrow))
                 {
-                    rb.velocity = new Vector2(0, playerCharacter.ClimbSpeed * Time.deltaTime);
+                    rb.velocity = new Vector2(0, playerCharacter.ClimbSpeed);
                 }
                 else if (Input.GetKey(KeyCode.DownArrow))
                 {
-                    rb.velocity = new Vector2(0, -playerCharacter.ClimbSpeed * Time.deltaTime);
+                    rb.velocity = new Vector2(0, -playerCharacter.ClimbSpeed);
                 }
                 else
                 {
@@ -316,17 +313,36 @@ public class PlayerController : MonoBehaviour
     {
         Attack();
         PickupItem();
-        Teleport();
+        ActivateTeleport();
     }
     
-    //Move to another map
+    //Activates the teleporting sequence
+    private void ActivateTeleport()
+    {
+        //If you aren't actively teleporting but you are on a teleport platform and hit the button
+        if (!teleporting && touchingTeleport && Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            uiController.FadeToBlack(); //Fade out
+            teleporting = true; //You are now actively teleporting
+        }
+        else if (teleporting)
+        {
+            if (!uiController.FadingOut()) //Wait to move the player until you're all the way faded
+            {
+                Teleport(); //move the player
+                teleporting = false; //no longer teleporting
+            }
+        }
+    }
+
+    //Actually teleports the player to the new area
     private void Teleport()
     {
-        if (touchingTeleport && Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            transform.position = nextTeleportLocation.transform.position;
-            Camera.main.transform.position = teleportCameraLoc; 
-        }
+        transform.position = nextTeleportLocation.transform.position; //move the player
+
+        Camera.main.transform.position = teleportCameraLoc; //Snaps the camera to the player's new position
+
+        uiController.FadeInFromBlack(); //Fade back in
     }
 
     //Updates the timings for simple things like taking damage and basic attacks
@@ -335,16 +351,7 @@ public class PlayerController : MonoBehaviour
         UpdateDamageTime();
         UpdateAttackTime();
     }
-
-    private void ToggleInventory()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            inventory.UI.Show(!inventory.Opened);
-        }
-    }
-
-
+       
     private void OnCollisionEnter2D(Collision2D collision)
     {
         string tag = collision.gameObject.tag;
