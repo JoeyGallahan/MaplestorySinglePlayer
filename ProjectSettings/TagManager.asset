@@ -47,6 +47,8 @@ TagManager:
   - SkillCanvas
   - EffectsCanvas
   - FadeToBlack
+  - WallLeft
+  - WallRight
   layers:
   - Default
   - TransparentFX

@@ -219,6 +219,14 @@ public class PlayerController : MonoBehaviour
     //Performs a basic attack
     private void BasicAttack()
     {
+        if (grounded)
+        {
+            //Make it so they can't move horizontally while attacking
+            Vector3 newVel = Vector3.zero;
+            newVel.y = rb.velocity.y;
+            rb.velocity = newVel;
+        }
+
         float attackRange = playerCharacter.BaseAttackRange; //Get your base attack range
         int attackDamage = playerCharacter.GetDamage(); //Get your base damage
 

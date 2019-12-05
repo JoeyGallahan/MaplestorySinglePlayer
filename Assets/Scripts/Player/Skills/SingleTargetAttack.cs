@@ -8,6 +8,8 @@ public abstract class SingleTargetAttack : Skill
 
     protected override void GetTargets()
     {
+        targets[0] = null;
+
         UpdatePlayerData(); //Get where the player is rn. Scriptable objects are weird and dont update the variables automatically like components so we have to do it manually.
 
         RaycastHit2D hit = Physics2D.Raycast(player.transform.position, -player.transform.right, range, enemyLayer); //Find an enemy in our path

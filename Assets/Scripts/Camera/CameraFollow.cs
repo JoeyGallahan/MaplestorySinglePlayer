@@ -6,11 +6,10 @@ public class CameraFollow : MonoBehaviour
 {
     Transform player;
     [SerializeField]Vector3 offset;
-    [SerializeField] float curDistance;
-    [SerializeField] float maxDistance;
-    float time;
     Vector2 lastLocation;
     [SerializeField] float cameraMoveSpeed = 1.0f;
+    [SerializeField] bool canFollowLeft = true;
+    [SerializeField] bool canFollowRight = true;
 
     private void Awake()
     {
@@ -20,7 +19,6 @@ public class CameraFollow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //offset = player.transform.position - transform.position;
         offset.z = transform.position.z;
     }
 
@@ -38,5 +36,33 @@ public class CameraFollow : MonoBehaviour
             newCamPos = new Vector3(newCamPos.x - offset.x, newCamPos.y, newCamPos.z);
         }
         transform.position = Vector3.Lerp(transform.position, newCamPos, cameraMoveSpeed * Time.deltaTime);
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        //Debug.Log(collision.name + " - " + collision.tag);
+        if (collision.tag.Equals("WallLeft"))
+        {
+            //Debug.Log("EnterLeft");
+            canFollowLeft = false;
+        }
+        else if (collision.tag.Equals("WallRight"))
+        {
+            //Debug.Log("EnterRight");
+            canFollowRight = false;
+        }
+    }
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag.Equals("WallLeft"))
+        {
+            //Debug.Log("ExitLeft");
+            canFollowLeft = true;
+        }
+        else if (collision.tag.Equals("WallRight"))
+        {
+            //Debug.Log("ExitRight");
+            canFollowRight = true;
+        }
     }
 }
