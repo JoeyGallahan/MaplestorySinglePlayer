@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4488523289030699549}
   - component: {fileID: 4488523289030699538}
   - component: {fileID: 4488523289030699548}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Rope
   m_TagString: Rope
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 4488523289030699539}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.147, z: -1}
-  m_LocalScale: {x: 0.5, y: 6.295447, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -70,8 +70,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 63e3b887979feeb4b91b5c84ca70c228, type: 3}
-  m_Color: {r: 0, g: 0.3490566, b: 0.007666122, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 74e46ec28f104c948b6ea9711da660e8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -94,16 +94,16 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.00000014901161, y: -0.000000059604645}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.32, y: 1.6}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.19736636, y: 1.5896902}
   m_EdgeRadius: 0
