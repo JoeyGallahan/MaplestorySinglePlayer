@@ -16,7 +16,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     [SerializeField] private float climbSpeed = 5.0f;
 
     //Player specifics
-    private string playerName = "Player";
+    [SerializeField]private string playerName = "Player";
     [SerializeField] PlayerClass playerClass;
     EquippedItems equips;
     ParticleSystem levelUpParticles;
@@ -24,7 +24,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     //Attacking
     private int baseDamage = 3;
     private int maxDamage = 3;
-    private float baseAttackRange = 0.25f;
+    [SerializeField]private float baseAttackRange = 0.25f;
     private float baseAttackSpeed = 1.0f;
 
     //Levels
@@ -202,6 +202,7 @@ public sealed class PlayerCharacter : MonoBehaviour
         equips = GetComponent<EquippedItems>();
 
         levelUpParticles = GetComponentInChildren<ParticleSystem>();
+        LoadCharacterCreation();
     }
 
     public void TakeDamage(int damage)
@@ -274,7 +275,7 @@ public sealed class PlayerCharacter : MonoBehaviour
         UpdateDamageRange();
         ui.UpdateTexts();
         ui.ToggleAPChanges(true);
-        levelUpParticles.Play();
+        //levelUpParticles.Play();
     }
 
     private void UpdateDamageRange()

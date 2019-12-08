@@ -4,24 +4,34 @@ using UnityEngine;
 
 public class PhysicsObject : MonoBehaviour
 {
-    [SerializeField] float gravity = -0.05f;
-    [SerializeField] public bool grounded = false;
-    [SerializeField] BoxCollider2D collider;
-    [SerializeField] float collisionRange = 2f;
-    [SerializeField] public bool enableGravity = true;
-    [SerializeField] public Vector3 velocity = Vector3.zero;
-    public bool touchingRope = false;
+    public List<GameObject> nonEnvironmentCollisions;
 
+    //Forces on the object
+    [SerializeField] float gravity = -0.2f;
+    [SerializeField] Vector3 velocity = Vector3.zero;
+
+    //States
+    private bool leftBlocked = false, rightBlocked = false;
+    public bool grounded = false;
+    [SerializeField] public bool enableGravity = true;
+
+    //Raycasting for collision
+    BoxCollider2D collider;
+    [SerializeField] float collisionRange = 0.25f;
     RaycastOrigins raycastOrigins;
     [SerializeField] int horizontalRayCount = 4;
     [SerializeField] int verticalRayCount = 4;
     float horizontalRaySpacing, verticalRaySpacing;
-    float heightBeforeGrounded;
 
     //Layers
     int environmentLayer;
     int itemLayer = 12;
     LayerMask enemyLayer;
+
+    public Vector3 GetVelocity()
+    {
+        return velocity;
+    }
 
     private void Awake()
     {
@@ -29,12 +39,18 @@ public class PhysicsObject : MonoBehaviour
 
         environmentLayer = 9;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+
+        nonEnvironmentCollisions = new List<GameObject>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //DrawDebugRays();               
+        ResetCollisions();
+        CheckBottomCollision();
+        CheckTopCollision();
+        CheckLeftCollision();
+        CheckRightCollision();
     }
 
     private void FixedUpdate()
@@ -43,8 +59,11 @@ public class PhysicsObject : MonoBehaviour
         CalculateRaySpacing();
         ApplyGravity();
         ApplyPhysics();
-        CheckBottomCollision();
-        CheckTopCollision();
+    }
+
+    void ResetCollisions()
+    {
+        nonEnvironmentCollisions = new List<GameObject>();
     }
 
     //Checks to see if this object is colliding with something under it
@@ -52,148 +71,192 @@ public class PhysicsObject : MonoBehaviour
     {
         if (velocity.y <= 0) //Don't want to check for bottom collisions if you're moving up
         {
-            //Bottom Left Collisions
-            RaycastHit2D[] hits = Physics2D.RaycastAll(raycastOrigins.bottomLeft, -Vector2.up); //Get all the hits on the bottom left side
+            bool groundedThisFrame = false;
 
-            foreach (RaycastHit2D hit in hits) //Go through each hit individually
+            //We want to have multiple rays come out from the bottom, so go through this for the number of Vertical Rays we have enabled
+            for (int i = 0; i < verticalRayCount; i++)
             {
-                if (hit.collider != collider && Vector2.Distance(hit.point, raycastOrigins.bottomLeft) <= collisionRange) //If we hit something that's not itself and within the collision distance
-                {
-                    if (hit.collider.gameObject.layer == environmentLayer) //If it's in the environment layer
-                    {
-                        if (hit.collider.gameObject.tag == "Rope")
-                        {
+                Vector2 rayOrigin = raycastOrigins.bottomLeft + (Vector2.right * (verticalRaySpacing * i)); //Starting from the bottom left, space out the ray based on the spacing we have set up and use this as the origin
+                RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, -Vector2.up); //Get all the hits from this origin
+                Debug.DrawRay(rayOrigin, -Vector2.up * collisionRange, Color.blue); //Draw the ray for debugging purposes
 
+                foreach (RaycastHit2D hit in hits) //Go through each hit individually
+                {
+                    if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                    {
+                        if (hit.collider.gameObject.layer == environmentLayer && hit.collider.tag.Equals("Platform")) //If it's in the environment layer
+                        {
+                            velocity.y = 0.0f; //stop it from moving
+                            groundedThisFrame = true; //it's now grounded
                         }
                         else
                         {
-                            grounded = true;
-                            velocity.y = 0.0f;
+                            if (!nonEnvironmentCollisions.Contains(hit.collider.gameObject))
+                            {
+                                nonEnvironmentCollisions.Add(hit.collider.gameObject); //Add it to the list of special collisions so we can do whatever we need to do in our controllers
+                            }
                         }
                     }
-                    return; //don't need to check anymore so stop the method
                 }
             }
-
-            hits = null; //reset the hits just to be safe
-
-            //Bottom Right Collisions
-            hits = Physics2D.RaycastAll(raycastOrigins.bottomRight, -Vector2.up); //Get all the hits on the bottom right side
-
-            //Do the same thing but on the right side
-            foreach (RaycastHit2D hit in hits)
-            {
-                if (hit.collider != collider && Vector2.Distance(hit.point, raycastOrigins.bottomRight) <= collisionRange)
-                {
-                    if (hit.collider.gameObject.layer == environmentLayer)
-                    {
-                        if (hit.collider.gameObject.tag == "Rope")
-                        {
-
-                        }
-                        else
-                        {
-                            grounded = true;
-                            velocity.y = 0.0f;
-                        }
-                    }
-                    return;
-                }
-            }
-
-            grounded = false;
+            grounded = groundedThisFrame;
         }
     }
 
     //Checks to see if this object is colliding with something above it
     void CheckTopCollision()
-    {          
-        //Top Left Side
-        RaycastHit2D[] hits = Physics2D.RaycastAll(raycastOrigins.topLeft, -Vector2.up);
-        Debug.DrawRay(raycastOrigins.topLeft, Vector2.up * collisionRange, Color.blue);
-
-        foreach (RaycastHit2D hit in hits)
+    {              
+        //We want to have multiple rays come out from the top, so go through this for the number of Vertical Rays we have enabled
+        for (int i = 0; i < verticalRayCount; i++)
         {
-            if (hit.collider != collider && Vector2.Distance(hit.point, raycastOrigins.topLeft) <= collisionRange)
+            Vector2 rayOrigin = raycastOrigins.topLeft + (Vector2.right * (verticalRaySpacing * i)); //Starting from the top left, space out the ray based on the spacing we have set up and use this as the origin
+            RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, Vector2.up); //Get all the hits from this origin
+            Debug.DrawRay(rayOrigin, Vector2.up * collisionRange, Color.red); //Draw the ray for debugging purposes
+
+            foreach (RaycastHit2D hit in hits) //Go through each hit individually
             {
-                if (hit.collider.gameObject.layer != environmentLayer)
+                if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
                 {
-                    if (hit.collider.gameObject.tag == "Rope")
+                    if (hit.collider.gameObject.layer != environmentLayer) //If it's not in the environment layer
                     {
-                        touchingRope = true;
-                        return;
-                    }
-                    else
-                    {
-                        touchingRope = false;
+                        if (!nonEnvironmentCollisions.Contains(hit.collider.gameObject))
+                        {
+                            nonEnvironmentCollisions.Add(hit.collider.gameObject); //Add it to the list of special collisions so we can do whatever we need to do in our controllers
+                        }
                     }
                 }
             }
         }
-
-        hits = null;
-
-        //Top right side
-        hits = Physics2D.RaycastAll(raycastOrigins.topRight, -Vector2.up);
-        Debug.DrawRay(raycastOrigins.topRight, Vector2.up * collisionRange, Color.blue);
-
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider != collider && Vector2.Distance(hit.point, raycastOrigins.topRight) <= collisionRange)
-            {
-                if (hit.collider.gameObject.layer == environmentLayer)
-                {
-                    if (hit.collider.gameObject.tag == "Rope")
-                    {
-                        touchingRope = true;
-                        return;
-                    }
-                    else
-                    {
-                        touchingRope = false;
-                    }
-                }
-            }
-        }
-
-        touchingRope = false;
     }
 
+    //Checks to see if this object is colliding with something to the left of it
+    void CheckLeftCollision()
+    {
+        bool leftBlockedThisFrame = false;
+
+        //We want to have multiple rays come out from the left, so go through this for the number of Horizontal Rays we have enabled
+        for (int i = 0; i < horizontalRayCount; i++)
+        {
+            Vector2 rayOrigin = raycastOrigins.bottomLeft + (Vector2.up * (horizontalRaySpacing * i)); //Starting from the bottom left, space out the ray based on the spacing we have set up and use this as the origin
+            RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, -Vector2.right); //Get all the hits from this origin
+            Debug.DrawRay(rayOrigin, -Vector2.right * collisionRange, Color.green); //Draw the ray for debugging purposes
+
+            foreach (RaycastHit2D hit in hits) //Go through each hit individually
+            {
+                if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                {
+                    if (hit.collider.gameObject.layer != environmentLayer) //If it's not in the environment layer
+                    {
+                        if (!nonEnvironmentCollisions.Contains(hit.collider.gameObject))
+                        {
+                            nonEnvironmentCollisions.Add(hit.collider.gameObject); //Add it to the list of special collisions so we can do whatever we need to do in our controllers
+                        }
+                    }
+                    else if (hit.collider.tag.Equals("Wall"))
+                    {
+                        leftBlockedThisFrame = true; //don't let this object move to the left
+                    }
+                }
+            }
+        }
+
+        leftBlocked = leftBlockedThisFrame;
+    }
+
+    //Checks to see if this object is colliding with something to the left of it
+    void CheckRightCollision()
+    {
+        bool rightBlockedThisFrame = false;
+        //We want to have multiple rays come out from the left, so go through this for the number of Horizontal Rays we have enabled
+        for (int i = 0; i < horizontalRayCount; i++)
+        {
+
+            Vector2 rayOrigin = raycastOrigins.bottomRight + (Vector2.up * (horizontalRaySpacing * i)); //Starting from the bottom left, space out the ray based on the spacing we have set up and use this as the origin
+            RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, Vector2.right); //Get all the hits from this origin
+            Debug.DrawRay(rayOrigin, Vector2.right * collisionRange, Color.yellow); //Draw the ray for debugging purposes
+
+            foreach (RaycastHit2D hit in hits) //Go through each hit individually
+            {
+                if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                {
+                    if (hit.collider.gameObject.layer != environmentLayer) //If it's not in the environment layer
+                    {
+                        if (!nonEnvironmentCollisions.Contains(hit.collider.gameObject))
+                        {
+                            nonEnvironmentCollisions.Add(hit.collider.gameObject); //Add it to the list of special collisions so we can do whatever we need to do in our controllers
+                        }
+                    }
+                    else if (hit.collider.tag.Equals("Wall"))
+                    {
+                        rightBlockedThisFrame = true; //Don't let this object move to the right
+                    }
+                }
+            }
+        }
+        rightBlocked = rightBlockedThisFrame;
+    }
+
+    //Sets the entire velocity to a given value
     public void SetVelocity(Vector3 vel)
     {
         velocity = vel;
     }
 
-    void ApplyPhysics()
+    //Sets only the x value of the velocity
+    public void SetVelX(float x)
     {
-        transform.position += velocity;
+        velocity.x = x;
     }
 
+    //Adds a force to the object
     public void AddForce(Vector3 force)
     {
         velocity += force;
     }
 
+    //Sets only the y value of the velocity
+    public void SetVelY(float y)
+    {
+        velocity.y = y;
+    }
+
+    //Moves the object based on its velocity
+    void ApplyPhysics()
+    {
+        if (velocity.x < 0f && leftBlocked)
+        {
+            velocity.x = 0f;
+        }
+        else if (velocity.x > 0f && rightBlocked)
+        {
+            velocity.x = 0f;
+        }
+        transform.position += velocity;
+    }
+
+    //Applies gravity to the object
     void ApplyGravity()
     {
-        if (enableGravity && !grounded)
+        if (enableGravity && !grounded) //If gravity is enabled and the object is not on the ground
         {
-            if (velocity.y > gravity)
+            if (velocity.y > gravity) //If the object's velocity is higher than the force of gravity
             {
-                AddForce(new Vector3(0f, gravity * Time.deltaTime, 0f));
+                AddForce(new Vector3(0f, gravity * Time.deltaTime, 0f)); //Add the gravity force to the object 
             }
             else
             {
-                velocity.y = gravity;
+                velocity.y = gravity; //otherwise, make it move down at the speed of gravity
             }
         }
     }
 
+    //Gets the outer bounds of this object
     Bounds GetBounds()
     {
         return collider.bounds;
     }
 
+    //Updates the locations of where we want the raycasts to come out of
     void UpdateRaycastOrigins()
     {
         Bounds bounds = GetBounds();
@@ -204,32 +267,21 @@ public class PhysicsObject : MonoBehaviour
         raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
     }
 
+    //Calculates how far apart we want each ray to be
     void CalculateRaySpacing()
     {
         Bounds bounds = GetBounds();
 
-        //Need at least two in each direction so clamp it just in case im dumb and set it lower somewhere
+        //Need at least two in each direction (each corner) so clamp it just in case im dumb and set it lower somewhere
         horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
         verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
+
+        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1); //Horizontal rays are spaced out by the y axis and we want them spread evenly along the collider
+        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1); //Vertical rays are spaced out by the x axis and we want them spread evenly along the collider
     }
 
     struct RaycastOrigins
     {
         public Vector2 topLeft, topRight, bottomLeft, bottomRight;
-    }
-
-    void DrawDebugRays()
-    {
-        Debug.DrawRay(raycastOrigins.bottomLeft, Vector2.up * -collisionRange, Color.red);
-        Debug.DrawRay(raycastOrigins.bottomLeft, Vector2.right * -collisionRange, Color.red);
-
-        Debug.DrawRay(raycastOrigins.bottomRight, Vector2.up * -collisionRange, Color.blue);
-        Debug.DrawRay(raycastOrigins.bottomRight, Vector2.right * collisionRange, Color.blue);
-
-        Debug.DrawRay(raycastOrigins.topLeft, Vector2.up * collisionRange, Color.green);
-        Debug.DrawRay(raycastOrigins.topLeft, Vector2.right * -collisionRange, Color.green);
-
-        Debug.DrawRay(raycastOrigins.topRight, Vector2.up * collisionRange, Color.white);
-        Debug.DrawRay(raycastOrigins.topRight, Vector2.right * collisionRange, Color.white);
     }
 }

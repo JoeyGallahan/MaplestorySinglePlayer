@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6532375954274676221}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Short Platform
   m_TagString: Platform
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6532375954603213928}
   - component: {fileID: 6532375954603213929}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,8 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6532375955202711975}
   - component: {fileID: 6532375955202711972}
-  - component: {fileID: 6532375955202711974}
-  - component: {fileID: 8872927425996429855}
+  - component: {fileID: 1628737202}
   m_Layer: 9
   m_Name: Top
   m_TagString: Platform
@@ -195,8 +194,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &6532375955202711974
-BoxCollider2D:
+--- !u!60 &1628737202
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -206,9 +205,9 @@ BoxCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 1
+  m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0023545027, y: 0.016481161}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -218,25 +217,11 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 2.9918582, y: 0.4302249}
-  m_EdgeRadius: 0
---- !u!251 &8872927425996429855
-PlatformEffector2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6532375955202711968}
-  m_Enabled: 1
-  m_UseColliderMask: 1
-  m_ColliderMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RotationalOffset: 0
-  m_UseOneWay: 1
-  m_UseOneWayGrouping: 0
-  m_SurfaceArc: 180
-  m_UseSideFriction: 0
-  m_UseSideBounce: 0
-  m_SideArc: 0
+  m_Points:
+    m_Paths:
+    - - {x: -1.3657842, y: 0.2437293}
+      - {x: -1.496882, y: 0.0845688}
+      - {x: -1.5, y: -0.234375}
+      - {x: 1.5, y: -0.234375}
+      - {x: 1.496882, y: 0.07833266}
+      - {x: 1.3720205, y: 0.24061114}

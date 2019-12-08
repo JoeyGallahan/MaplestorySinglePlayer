@@ -5,7 +5,7 @@ using UnityEngine;
 public class Teleport : MonoBehaviour
 {
     TeleportID id;
-    public GameObject otherTeleportPlat;
+    public Teleport otherTeleportPlat;
     public Vector3 cameraLoc;
     [SerializeField] float cameraOffsetY;
 
@@ -18,11 +18,9 @@ public class Teleport : MonoBehaviour
     void Start()
     {
         GetTeleportMatch();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        cameraLoc = transform.position;
+        cameraLoc.y = cameraOffsetY;
+        cameraLoc.z = -10f;
     }
 
     private void GetTeleportMatch()
@@ -34,12 +32,7 @@ public class Teleport : MonoBehaviour
             TeleportID teleID = t.GetComponent<TeleportID>();
             if (t != this.gameObject && teleID.teleportID == id.teleportID)
             {
-                otherTeleportPlat = t;
-
-                Transform area = t.transform.parent;
-                cameraLoc = area.position;
-                cameraLoc.y += cameraOffsetY;
-                cameraLoc.z = -10f;
+                otherTeleportPlat = t.GetComponent<Teleport>();
 
                 return;
             }

@@ -7,7 +7,7 @@ public class EnemyDamageUI : MonoBehaviour
 {
     [SerializeField] TextMeshPro textPrefab;
 
-    Vector3 offset = new Vector3(0.0f, 0.5f);
+    Vector3 offset = new Vector3(0.0f, 1.5f);
     public Queue<TextMeshPro> damages = new Queue<TextMeshPro>();
     int maxCount = 5;
 

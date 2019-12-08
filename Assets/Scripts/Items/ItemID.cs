@@ -13,6 +13,6 @@ public class ItemID : MonoBehaviour
 
     public void Pickup()
     {
-        Destroy(this.transform.parent.gameObject);
+        Destroy(transform.gameObject);
     }
 }

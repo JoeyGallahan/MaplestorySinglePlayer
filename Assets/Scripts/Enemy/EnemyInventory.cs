@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyInventory : MonoBehaviour
 {
     [SerializeField]List<int> itemIds = new List<int>();
-
+    
     public void DropItems(Vector2 position)
     {
         ItemDB db = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
@@ -17,7 +17,7 @@ public class EnemyInventory : MonoBehaviour
             float randomXForce = Random.Range(-5.0f, 5.0f);
 
             //Max them seem like they kind of burst out of the enemy
-            item.GetComponent<Rigidbody2D>().AddForce(new Vector2(randomXForce, 2.0f), ForceMode2D.Impulse);
+            item.GetComponent<PhysicsObject>().AddForce(new Vector2(randomXForce, 5.0f) * Time.deltaTime);
         }
     }
 }

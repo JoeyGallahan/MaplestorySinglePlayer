@@ -10,10 +10,6 @@ public class EquippedItems : MonoBehaviour
     private void Awake()
     {
         itemDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
-    }
-
-    private void Start()
-    {
         equips = new Dictionary<string, int>()
         {
             { "Weapon", -1},
@@ -25,6 +21,10 @@ public class EquippedItems : MonoBehaviour
             { "Ring1", -1},
             { "Ring2", -1}
         };
+    }
+
+    private void Start()
+    {
     }
 
     public void UpdateEquip(string type, int id)

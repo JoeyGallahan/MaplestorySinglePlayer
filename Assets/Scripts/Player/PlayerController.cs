@@ -413,7 +413,7 @@ public class PlayerController : MonoBehaviour
             touchingTeleport = true;
             Teleport tele = collision.gameObject.GetComponent<Teleport>();
 
-            nextTeleportLocation = tele.otherTeleportPlat;
+            //nextTeleportLocation = tele.otherTeleportPlat;
             teleportCameraLoc = tele.cameraLoc; 
         }
     }
@@ -439,7 +439,7 @@ public class PlayerController : MonoBehaviour
             touchingTeleport = true;
             Teleport tele = collision.gameObject.GetComponent<Teleport>();
 
-            nextTeleportLocation = tele.otherTeleportPlat;
+            //nextTeleportLocation = tele.otherTeleportPlat;
             teleportCameraLoc = tele.cameraLoc;
         }
     }

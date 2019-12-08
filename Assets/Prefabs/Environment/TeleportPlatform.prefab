@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2898931181325573427}
   - component: {fileID: 3951036517324624991}
   - component: {fileID: 1313136963028982725}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: TeleportPlatform
   m_TagString: TeleportPlat
   m_Icon: {fileID: 0}

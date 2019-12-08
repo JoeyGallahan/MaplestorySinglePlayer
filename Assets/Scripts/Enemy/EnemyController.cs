@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     EnemyCharacter enemy;
-    Rigidbody2D rb;
+    PhysicsObject physicsObject;
     EnemyDamageUI damageUI;
 
     //Layers
@@ -16,14 +16,17 @@ public class EnemyController : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        enemy = GetComponent<EnemyCharacter>();
-
-        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
-        Physics2D.IgnoreLayerCollision(enemyLayer, enemyLayer, true);
-        Physics2D.IgnoreLayerCollision(itemLayer, enemyLayer, true);
-
+        physicsObject = GetComponent<PhysicsObject>();
+        enemy = GetComponent<EnemyCharacter>();        
         damageUI = GetComponent<EnemyDamageUI>();
+    }
+
+    private void Update()
+    {
+        if (physicsObject.grounded)
+        {
+            physicsObject.SetVelX(0f);
+        }
     }
 
     public int TakeDamage(int damage, Vector2 dir)
@@ -36,7 +39,10 @@ public class EnemyController : MonoBehaviour
 
     private void Knockback(Vector2 dir)
     {
-        dir = new Vector2(dir.x, 1.0f);
-        rb.AddForce(dir * 1.0f, ForceMode2D.Impulse);
+        dir = new Vector2(dir.x, 3.0f);
+        physicsObject.SetVelY(0f);
+        physicsObject.SetVelX(0f);
+        physicsObject.grounded = false;
+        physicsObject.AddForce(dir * Time.deltaTime);
     }
 }

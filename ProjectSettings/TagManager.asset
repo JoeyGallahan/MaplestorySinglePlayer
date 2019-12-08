@@ -49,6 +49,7 @@ TagManager:
   - FadeToBlack
   - WallLeft
   - WallRight
+  - Wall
   layers:
   - Default
   - TransparentFX
