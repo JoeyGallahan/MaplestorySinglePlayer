@@ -135,11 +135,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35db8d8bb17b6124da8d745ebef7baf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nonEnvironmentCollisions: []
   gravity: -0.2
   velocity: {x: 0, y: 0, z: 0}
   grounded: 0
   enableGravity: 1
-  collisionRange: 0.25
+  collisionRange: 0.01
   horizontalRayCount: 4
   verticalRayCount: 4
 --- !u!114 &3882438256341132068

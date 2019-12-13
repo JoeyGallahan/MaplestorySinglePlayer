@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public abstract class Skill : ScriptableObject
 {
     protected PlayerCharacter player; //The actual player. This is used for things like finding enemies/party members in range.
-    protected int enemyLayer = 11;
+    protected LayerMask enemyLayer;
     protected UIController uiController;
 
     [SerializeField] public int id = -1; //The id of the skill
@@ -14,6 +14,7 @@ public abstract class Skill : ScriptableObject
     [SerializeField] public string classRequired; //The class a player must be to use this skill 
     [SerializeField] protected WeaponType.WeaponStyle[] requiredWeapons; //The weapons that need to be equipped to use this skill
     [SerializeField] public int levelRequired; //The level required to use this skill
+    [SerializeField] public int mpUsed;
     [SerializeField] public string description; //The description that will show on the skill UI
     [SerializeField] public GameObject skillSprite; //The sprite that will show on the UI
     [SerializeField] protected float range; //The range of the skill
@@ -31,6 +32,7 @@ public abstract class Skill : ScriptableObject
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
         uiController = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
     }
     protected virtual void PlayEnemySkill()
     {
@@ -38,6 +40,19 @@ public abstract class Skill : ScriptableObject
         {
             GameObject prefab = Instantiate(enemySkillPrefab, t.transform);
             Destroy(prefab, 1);
+        }
+    }
+    protected virtual bool UseMP()
+    {
+        if (player.CurMana < mpUsed)
+        {
+            return false;
+        }
+        else
+        {
+            player.CurMana -= mpUsed;
+
+            return true;
         }
     }
 }

@@ -145,8 +145,9 @@ public class TestPlayerController : MonoBehaviour
         climbing = true;
         physicsObject.enableGravity = false;
         physicsObject.grounded = false;
-
-        physicsObject.SetVelY(0f);
+        horInput = 0f;
+        verInput = 0f;
+        physicsObject.SetVelocity(Vector3.zero);
     }
 
     //Controls the player moving up and down a rope

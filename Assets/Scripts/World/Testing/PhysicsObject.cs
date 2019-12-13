@@ -46,6 +46,8 @@ public class PhysicsObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateRaycastOrigins();
+        CalculateRaySpacing();
         ResetCollisions();
         CheckBottomCollision();
         CheckTopCollision();
@@ -55,8 +57,6 @@ public class PhysicsObject : MonoBehaviour
 
     private void FixedUpdate()
     {
-        UpdateRaycastOrigins();
-        CalculateRaySpacing();
         ApplyGravity();
         ApplyPhysics();
     }
@@ -81,12 +81,12 @@ public class PhysicsObject : MonoBehaviour
                 Debug.DrawRay(rayOrigin, -Vector2.up * collisionRange, Color.blue); //Draw the ray for debugging purposes
 
                 foreach (RaycastHit2D hit in hits) //Go through each hit individually
-                {
-                    if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                {                   
+                    if (hit.collider != collider && hit.distance <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
                     {
                         if (hit.collider.gameObject.layer == environmentLayer && hit.collider.tag.Equals("Platform")) //If it's in the environment layer
                         {
-                            velocity.y = 0.0f; //stop it from moving
+                            velocity.y = 0.0f; //stop the player from moving
                             groundedThisFrame = true; //it's now grounded
                         }
                         else
@@ -115,7 +115,7 @@ public class PhysicsObject : MonoBehaviour
 
             foreach (RaycastHit2D hit in hits) //Go through each hit individually
             {
-                if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                if (hit.collider != collider && hit.distance <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
                 {
                     if (hit.collider.gameObject.layer != environmentLayer) //If it's not in the environment layer
                     {
@@ -143,7 +143,7 @@ public class PhysicsObject : MonoBehaviour
 
             foreach (RaycastHit2D hit in hits) //Go through each hit individually
             {
-                if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                if (hit.collider != collider && hit.distance <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
                 {
                     if (hit.collider.gameObject.layer != environmentLayer) //If it's not in the environment layer
                     {
@@ -177,7 +177,7 @@ public class PhysicsObject : MonoBehaviour
 
             foreach (RaycastHit2D hit in hits) //Go through each hit individually
             {
-                if (hit.collider != collider && Vector2.Distance(hit.point, rayOrigin) <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
+                if (hit.collider != collider && hit.distance <= collisionRange) //If we hit something that's not itself and within the collision distance (using distance in the actual raycast isn't accurate so we just check it here)
                 {
                     if (hit.collider.gameObject.layer != environmentLayer) //If it's not in the environment layer
                     {

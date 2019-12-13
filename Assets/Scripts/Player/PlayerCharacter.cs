@@ -275,7 +275,7 @@ public sealed class PlayerCharacter : MonoBehaviour
         UpdateDamageRange();
         ui.UpdateTexts();
         ui.ToggleAPChanges(true);
-        //levelUpParticles.Play();
+        levelUpParticles.Play();
     }
 
     private void UpdateDamageRange()

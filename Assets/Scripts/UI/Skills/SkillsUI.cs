@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class SkillsUI : MonoBehaviour
 {
@@ -8,7 +10,12 @@ public class SkillsUI : MonoBehaviour
     SkillDB skillDB;
     SkillsGrid starterSkills;
     [SerializeField] GameObject skillGridPrefab;
-    [SerializeField] GameObject skillDescriptionPrefab;
+    [SerializeField] TextMeshProUGUI skillName;
+    [SerializeField] Image skillImage;
+    [SerializeField] TextMeshProUGUI skillReqLvl;
+    [SerializeField] TextMeshProUGUI skillMP;
+    [SerializeField] TextMeshProUGUI skillDesc;
+
     PlayerCharacter player;
 
     private void Awake()
@@ -22,6 +29,7 @@ public class SkillsUI : MonoBehaviour
     void Start()
     {
         starterSkills.AddToGrid(skillGridPrefab, skillDB.GetSkillsByClass(player.ClassName));
+        UpdateDescription(0);
         Show(false);
     }
 
@@ -39,5 +47,17 @@ public class SkillsUI : MonoBehaviour
     public bool Showing()
     {
         return parentObj.activeInHierarchy;
+    }
+
+    public void UpdateDescription(int id)
+    {
+        Skill selectedSkill = skillDB.GetSkillByID(id);
+
+        skillName.SetText(selectedSkill.skillName);
+        skillReqLvl.SetText(selectedSkill.levelRequired.ToString());
+        skillMP.SetText(selectedSkill.mpUsed.ToString());
+        skillDesc.SetText(selectedSkill.description);
+
+        skillImage.sprite = selectedSkill.skillSprite.GetComponent<Image>().sprite;
     }
 }
