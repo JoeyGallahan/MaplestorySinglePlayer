@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3fea2371d1a2954b95d7ac047f6d553, type: 3}
-  m_Name: 1 - BigSlash
+  m_Name: 1 - Sweep
   m_EditorClassIdentifier: 
   id: 1
-  skillName: Big Slash
+  skillName: Sweep
   classRequired: Warrior
   requiredWeapons: 0000000001000000
   levelRequired: 1
-  description: Does a big ole slash
+  mpUsed: 10
+  description: Hits up to 3 enemies dealing 50% damage.
   skillSprite: {fileID: 5815180175044248706, guid: 99ec2cc662bc97249af24849010bebc1,
     type: 3}
   range: 6
@@ -27,4 +28,8 @@ MonoBehaviour:
     type: 3}
   targets:
   - {fileID: 0}
-  damagePercent: 150
+  - {fileID: 0}
+  - {fileID: 0}
+  damagePercent: 50
+  numTargets: 3
+  targetsHit: 1

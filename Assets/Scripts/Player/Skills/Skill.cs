@@ -38,8 +38,11 @@ public abstract class Skill : ScriptableObject
     {
         foreach(GameObject t in targets)
         {
-            GameObject prefab = Instantiate(enemySkillPrefab, t.transform);
-            Destroy(prefab, 1);
+            if (t != null)
+            {
+                GameObject prefab = Instantiate(enemySkillPrefab, t.transform);
+                Destroy(prefab, 1);
+            }
         }
     }
     protected virtual bool UseMP()

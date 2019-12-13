@@ -17,7 +17,8 @@ MonoBehaviour:
   classRequired: Warrior
   requiredWeapons: 0000000001000000
   levelRequired: 1
-  description: Hits a single enemy twice.
+  mpUsed: 10
+  description: Hits a single enemy twice dealing 75% damage each hit.
   skillSprite: {fileID: 5815180175044248706, guid: d24abb04fb84a3e4899e3cb01508efcf,
     type: 3}
   range: 2
