@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 4683528122099028888}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.33, y: -5.27, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -95,18 +95,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.12750244, y: -0.0052042007}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.53, y: 0.74}
+    oldSize: {x: 1.65625, y: 2.3125}
     newSize: {x: 0.53, y: 0.74}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.53, y: 0.74}
+  m_Size: {x: 1.388691, y: 2.3012552}
   m_EdgeRadius: 0
 --- !u!114 &3589339285210453285
 MonoBehaviour:
@@ -120,10 +120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35db8d8bb17b6124da8d745ebef7baf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nonEnvironmentCollisions: []
   gravity: -0.2
   velocity: {x: 0, y: 0, z: 0}
   grounded: 0
   enableGravity: 1
-  collisionRange: 0.25
+  collisionRange: 0.1
   horizontalRayCount: 4
   verticalRayCount: 4
