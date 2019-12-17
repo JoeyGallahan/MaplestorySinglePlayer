@@ -10,6 +10,7 @@ public class UIController : MonoBehaviour
     SkillsUI skillsUI;
     InventoryUI inventoryUI;
     UIEffects uiEffects;
+    DialogueSelectionUI dialogueSelectionUI;
 
     private void Awake()
     {
@@ -23,6 +24,7 @@ public class UIController : MonoBehaviour
         inventoryUI = GameObject.FindGameObjectWithTag("InventoryCanvas").GetComponentInChildren<InventoryUI>();
 
         uiEffects = GameObject.FindGameObjectWithTag("EffectsCanvas").GetComponent<UIEffects>();
+        dialogueSelectionUI = GameObject.FindGameObjectWithTag("DialogueCanvas").GetComponentInChildren<DialogueSelectionUI>();
     }
 
     // Start is called before the first frame update
@@ -99,6 +101,18 @@ public class UIController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.I))
         {
             inventoryUI.Show(!inventoryUI.Showing());
+        }
+    }
+
+    public void ToggleDialogueSelection(bool maybe, GameObject npc)
+    {
+        if (maybe)
+        {
+            dialogueSelectionUI.OpenSelection(npc);
+        }
+        else
+        {
+            dialogueSelectionUI.CloseSelection();
         }
     }
 }

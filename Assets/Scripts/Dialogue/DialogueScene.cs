@@ -2,13 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogueScene : MonoBehaviour
+[System.Serializable]
+public class DialogueScene
 {
+    [SerializeField] string sceneTitle;
+    [SerializeField] int requiredLevel;
     [SerializeField] TextAsset textFile;
     [SerializeField] List<DialogueLine> dialogueLines = new List<DialogueLine>();
 
-    ReadTextFile textReader;
 
+    public string Title
+    {
+        get => sceneTitle;
+        set
+        {
+            sceneTitle = value;
+        }
+    }
+    public int RequiredLevel
+    {
+        get => requiredLevel;
+    }
+    public TextAsset TextFile
+    {
+        get => textFile;
+    }
+    public List<DialogueLine> DialogueLines
+    {
+        get => dialogueLines;
+    }
+    /*
     private void Awake()
     {
         textReader = GameObject.FindGameObjectWithTag("GameController").GetComponent<ReadTextFile>();
@@ -17,7 +40,7 @@ public class DialogueScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        textReader.SplitText(textFile.text, dialogueLines);
+        textReader.SplitText(textFile.text, dialogueLines, this);
     }
 
     // Update is called once per frame
@@ -25,4 +48,5 @@ public class DialogueScene : MonoBehaviour
     {
         
     }
+    */
 }

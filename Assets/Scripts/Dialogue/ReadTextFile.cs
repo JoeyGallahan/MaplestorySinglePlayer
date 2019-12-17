@@ -7,23 +7,28 @@ public class ReadTextFile: MonoBehaviour
     char delimiter = '|';
     string[] responseFlags = 
     {
+        "[TITLE]",
         "[OK]",
         "[NEXT]",
         "[ACCEPT]"
     };
 
-    void Start()
-    {
-    }
-
-    public void SplitText(string fullText, List<DialogueLine> dialogueLines)
+    public void SplitText(string fullText, List<DialogueLine> dialogueLines, DialogueScene scene)
     {
         string[] splitTexts = fullText.Split(delimiter); //split up the text by the delimiter
 
         for (int i = 0; i < splitTexts.Length; i++) //Go through each one and create a new Dialogue Line
         {
-            Debug.Log(splitTexts[i]);
-            dialogueLines.Add(new DialogueLine(splitTexts[i], GetFlags(splitTexts[i])));
+            string flag = GetFlags(splitTexts[i]);
+
+            if (!flag.Equals(responseFlags[0]))
+            {
+                dialogueLines.Add(new DialogueLine(splitTexts[i], flag));
+            }
+            else
+            {
+                scene.Title = splitTexts[i];
+            }
         }
     }
 

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 8626814515511842916}
   - component: {fileID: 2703752048900588421}
   - component: {fileID: 3589339285210453285}
+  - component: {fileID: 4993237179072041773}
+  - component: {fileID: 9143159517649104546}
   m_Layer: 13
   m_Name: WarriorTut
   m_TagString: Untagged
@@ -128,3 +130,36 @@ MonoBehaviour:
   collisionRange: 0.1
   horizontalRayCount: 4
   verticalRayCount: 4
+--- !u!114 &4993237179072041773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683528122099028888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c0c626eb184bbe40aabbb7397dec5fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenes:
+  - sceneTitle: 
+    requiredLevel: 0
+    textFile: {fileID: 0}
+    dialogueLines: []
+  - sceneTitle: 
+    requiredLevel: 0
+    textFile: {fileID: 0}
+    dialogueLines: []
+--- !u!114 &9143159517649104546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683528122099028888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f1ecfe894f2104193c0cde11f25475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
