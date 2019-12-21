@@ -29,7 +29,7 @@ public class SkillsUI : MonoBehaviour
     void Start()
     {
         starterSkills.AddToGrid(skillGridPrefab, skillDB.GetSkillsByClass(player.ClassName));
-        UpdateDescription(0);
+        UpdateDescription(skillDB.GetSkillsByClass(player.ClassName)[0].id);
         Show(false);
     }
 

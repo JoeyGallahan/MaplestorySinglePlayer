@@ -60,20 +60,20 @@ public class InventoryUI : MonoBehaviour
         etcParent.SetActive(true);
     }
 
-    public void AddToGrid(int id)
+    public void AddToGrid(int id, int amount = 1)
     {
         Item item = itemDB.GetItemByID(id);
 
         switch (item.Category)
         {
             case Item.ItemCategory.EQUIPMENT:
-                equipGrid.AddToGrid(item.UIPrefab);
+                equipGrid.AddToGrid(item.UIPrefab, amount);
                 break;
             case Item.ItemCategory.USE:
-                useGrid.AddToGrid(item.UIPrefab);
+                useGrid.AddToGrid(item.UIPrefab, amount);
                 break;
             case Item.ItemCategory.ETC:
-                etcGrid.AddToGrid(item.UIPrefab);
+                etcGrid.AddToGrid(item.UIPrefab, amount);
                 break;
         }
     }

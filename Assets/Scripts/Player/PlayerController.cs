@@ -74,11 +74,19 @@ public class PlayerController : MonoBehaviour
         uiController = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
 
         weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
-
     }
     private void Start()
     {
-        playerCharacter.LoadCharacterCreation();
+        inventory.AddToInventory(0, 5);
+        inventory.AddToInventory(4, 5);
+
+        switch (playerCharacter.ClassName)
+        {
+            case "Warrior": inventory.AddToInventory(3);
+                break;
+            case "Mage": inventory.AddToInventory(5);
+                break;
+        }
     }
 
     // Update is called once per frame

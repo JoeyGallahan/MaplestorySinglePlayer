@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59a02217e3b4a0429a21b50d30fd56c, type: 3}
+  m_Name: 2 - IcycleDrop
+  m_EditorClassIdentifier: 
+  id: 2
+  skillName: Icycle Drop
+  classRequired: Mage
+  requiredWeapons: 0200000003000000
+  levelRequired: 1
+  mpUsed: 30
+  description: Rains icycles down on a single enemy to deal 150% damage.
+  skillSprite: {fileID: 5815180175044248706, guid: e4ff37593d6746e4cb1bddb7ceb0c0d4,
+    type: 3}
+  range: 5
+  skillAnimation: {fileID: 7400000, guid: 0fa7402708bfe3b4388c082ecb98a29e, type: 2}
+  playerSkillPrefab: {fileID: 0}
+  enemySkillPrefab: {fileID: 5815180175044248706, guid: c7c9d3324fa45d14ab519aa7c5112140,
+    type: 3}
+  targets:
+  - {fileID: 0}
+  damagePercent: 150

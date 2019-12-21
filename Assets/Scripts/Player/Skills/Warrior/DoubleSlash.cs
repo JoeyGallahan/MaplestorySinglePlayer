@@ -9,7 +9,11 @@ public class DoubleSlash : SingleTargetAttack
     {
         GetTargets(); //Get our target
 
-        if (targets[0] != null) //If we hit an enemy
+        if (!CheckEquippedWeapon()) //Check to see if we have the necessary weapon type equipped
+        {
+            Debug.Log("You can't use this skill with that weapon");
+        }
+        else if (targets[0] != null) //If we hit an enemy
         {
             if (UseMP())
             {

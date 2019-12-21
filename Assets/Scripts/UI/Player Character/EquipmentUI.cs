@@ -32,4 +32,11 @@ public class EquipmentUI : MonoBehaviour
         newEquip.transform.parent = transform;
         newEquip.transform.localScale = new Vector3(1.0f, 1.0f);
     }
+
+    public void RemoveEquip()
+    {
+        GameObject equip = GetComponentInChildren<ItemID>().gameObject;
+
+        Destroy(equip);
+    }
 }

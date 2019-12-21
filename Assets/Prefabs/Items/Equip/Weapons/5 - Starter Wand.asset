@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3c6c08081477d40978b9ca61d2d0a9, type: 3}
+  m_Name: 5 - Starter Wand
+  m_EditorClassIdentifier: 
+  id: 5
+  itemCategory: 0
+  itemName: Starter Wand
+  sellPrice: 100
+  dropChance: 0
+  uiPrefab: {fileID: 3133256055161240523, guid: 4a27e5f795dea9c44841ac69b993116f,
+    type: 3}
+  dropPrefab: {fileID: 5287945365512521225, guid: 997a9684098412142827e02bd9f336f8,
+    type: 3}
+  requiredStr: 3
+  requiredDex: 3
+  requiredInt: 3
+  requiredLuk: 3
+  equippedPrefab: {fileID: 5287945365512521225, guid: 981648bec004014409d4eac994cb8514,
+    type: 3}
+  weaponType:
+    weaponStyle: 3
+    typeName: 
+    melee: 1
+    apType: str
+    classCanEquip: Warrior
+  damage: 10
+  attackRange: 5
+  attackSpeed: 1

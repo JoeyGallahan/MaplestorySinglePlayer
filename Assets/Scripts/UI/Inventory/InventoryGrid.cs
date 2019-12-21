@@ -6,11 +6,15 @@ using TMPro;
 
 public class InventoryGrid : MonoBehaviour
 {
-    public void AddToGrid(GameObject prefab)
+    public void AddToGrid(GameObject prefab, int amount)
     {
-        GameObject newObj;
+        GameObject newObj = (GameObject)Instantiate(prefab, transform);
 
-        newObj = (GameObject)Instantiate(prefab, transform);
+        if (amount > 1)
+        {
+            TextMeshProUGUI itemText = newObj.GetComponentInChildren<TextMeshProUGUI>();
+            itemText.SetText(amount.ToString());
+        }
     }
 
     public void UpdateGridItemAmount(int id, int amount)

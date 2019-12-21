@@ -13,19 +13,34 @@ public class Weapon : Equipment
     public int Damage { get => damage; }
     public float AttackRange { get => attackRange; }
     public float AttackSpeed { get => attackSpeed; }
+    public WeaponType WeaponStyle { get => weaponType; }
 
     public override void Action()
     {
-        UpdatePlayerData(); //Gets the updated information of the player.
-
-        Debug.Log("Equipping weapon: " + itemName);
+        UpdatePlayerData(); //Gets the updated information of the player.        
 
         GameObject weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
+        RemoveCurrentEquip(weaponSlot);
 
         GameObject newWeapon = (GameObject)Instantiate(equippedPrefab, weaponSlot.transform);
-
+                
+        Debug.Log("Equipping weapon: " + itemName);
         player.UpdateEquip("Weapon", id);
 
         inventory.RemoveItem(id);
+    }
+
+    protected override void RemoveCurrentEquip(GameObject weaponSlot)
+    {
+        ItemID id = weaponSlot.GetComponentInChildren<ItemID>();
+
+        if (id != null)
+        {
+            int ID = id.itemID;
+            Debug.Log(ID);
+            Destroy(id.gameObject);
+            player.ui.RemoveEquip("Weapon");
+            inventory.AddToInventory(ID);
+        }
     }
 }

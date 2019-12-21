@@ -13,8 +13,15 @@ public class EnemyCharacter : MonoBehaviour
     [SerializeField] int health = 100;
     [SerializeField] int level = 1;
     [SerializeField] int touchDamage = 10;
+    [SerializeField] float maxPatrolDistance = 5.0f;
+    [SerializeField] float moveSpeed = 5.0f;
+    [SerializeField] float maxFollowDistance = 10.0f;
 
     bool dead;
+
+    public float MaxPatrolDistance { get => maxPatrolDistance; }
+    public float MoveSpeed { get => moveSpeed; }
+    public float MaxFollowDistance { get => maxFollowDistance; }
 
     private void Awake()
     {

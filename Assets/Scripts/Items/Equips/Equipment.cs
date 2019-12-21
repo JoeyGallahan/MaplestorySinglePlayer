@@ -10,7 +10,6 @@ public abstract class Equipment : Item
     [SerializeField] int requiredLuk = 3;
 
     [SerializeField] public GameObject equippedPrefab;
-    protected PlayerCharacterUI characterUI;
     protected EquippedItems equipInventory;
 
     public abstract override void Action();
@@ -18,8 +17,8 @@ public abstract class Equipment : Item
     protected override void UpdatePlayerData()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
-        //characterUI = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
         inventory = player.GetComponent<PlayerInventory>();
         equipInventory = player.GetComponent<EquippedItems>();
     }
+    protected abstract void RemoveCurrentEquip(GameObject weaponSlot);
 }

@@ -32,7 +32,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     [SerializeField] private int experience = 0;
     private int experienceToNextLevel = 100;
 
-    PlayerCharacterUI ui;
+    public PlayerCharacterUI ui;
 
     //AP
     private int remainingAPPoints = 0;
@@ -242,6 +242,8 @@ public sealed class PlayerCharacter : MonoBehaviour
             case "Warrior": playerClass = new Warrior();
                 break;
             case "Bowman": playerClass = new Bowman();
+                break;
+            case "Mage": playerClass = new Mage();
                 break;
         }
 

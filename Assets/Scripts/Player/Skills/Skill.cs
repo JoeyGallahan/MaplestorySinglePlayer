@@ -58,4 +58,20 @@ public abstract class Skill : ScriptableObject
             return true;
         }
     }
+
+    protected virtual bool CheckEquippedWeapon()
+    {
+        //Check to see if we have the proper weapon equipped to use this skill
+        if (player.Equips.GetWeapon() != null)
+        {
+            foreach (WeaponType.WeaponStyle type in requiredWeapons)
+            {
+                if (player.Equips.GetWeapon().WeaponStyle.Style == type)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

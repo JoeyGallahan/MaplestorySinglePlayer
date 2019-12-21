@@ -33,6 +33,9 @@ public class PhysicsObject : MonoBehaviour
         return velocity;
     }
 
+    public bool LeftBlocked { get => leftBlocked; }
+    public bool RightBlocked { get => rightBlocked; }
+
     private void Awake()
     {
         collider = GetComponent<BoxCollider2D>();

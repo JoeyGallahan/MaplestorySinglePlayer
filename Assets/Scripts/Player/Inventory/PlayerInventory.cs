@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    [SerializeField] Dictionary<int, int> itemIDsAndAmount = new Dictionary<int,int>();
+    Dictionary<int, int> itemIDsAndAmount = new Dictionary<int,int>();
     InventoryUI inventoryUI;
     ItemDB db;
 
@@ -31,17 +31,17 @@ public class PlayerInventory : MonoBehaviour
     }
 
     //Adds an item to your inventory
-    public void AddToInventory(int id)
+    public void AddToInventory(int id, int amount = 1)
     {
         if(itemIDsAndAmount.ContainsKey(id))
         {
-            itemIDsAndAmount[id]++;
+            itemIDsAndAmount[id] += amount;
             inventoryUI.UpdateGridItemAmount(id, itemIDsAndAmount[id]);
         }
         else
         {
-            itemIDsAndAmount.Add(id,1);
-            inventoryUI.AddToGrid(id);
+            itemIDsAndAmount.Add(id, amount);
+            inventoryUI.AddToGrid(id, amount);
         }
     }
 

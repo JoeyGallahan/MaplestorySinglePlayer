@@ -112,4 +112,13 @@ public class PlayerCharacterUI : MonoBehaviour
 
         UpdateTexts();
     }
+
+    public void RemoveEquip(string type)
+    {
+        switch(type)
+        {
+            case "Weapon": weaponEquip.RemoveEquip();
+                break;
+        }
+    }
 }
