@@ -429,8 +429,6 @@ public class TestPlayerController : MonoBehaviour
     {
         if (!damaged)
         {
-            Debug.Log("Ouch");
-
             //Knockback
             physicsObject.grounded = false;
             physicsObject.SetVelY(0f);

@@ -107,7 +107,6 @@ public class EnemyController : MonoBehaviour
             patrolling = false; //reset the patrolling process
             waiting = true; //patrol cooldown
             physicsObject.SetVelX(0f); //stop them from moving
-            Debug.Log("Reached the end. Restart Patrolling");
         }
         else
         {
@@ -124,7 +123,6 @@ public class EnemyController : MonoBehaviour
                 patrolling = false; //if you're blocked, reset the patrolling process
                 waiting = true; //patrol cooldown
                 physicsObject.SetVelX(0f); //stop them from moving
-                Debug.Log("Blocked. Restart Patrolling");
             }
         }
     }

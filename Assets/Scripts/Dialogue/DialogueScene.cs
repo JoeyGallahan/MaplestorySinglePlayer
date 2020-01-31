@@ -5,12 +5,21 @@ using UnityEngine;
 [System.Serializable]
 public class DialogueScene
 {
+    [SerializeField] int npcID;
+    [SerializeField] int sceneID;
     [SerializeField] string sceneTitle;
     [SerializeField] int requiredLevel;
     [SerializeField] TextAsset textFile;
     [SerializeField] List<DialogueLine> dialogueLines = new List<DialogueLine>();
 
-
+    public int SceneID
+    {
+        get => sceneID;
+        set
+        {
+            sceneID = value;
+        }
+    }
     public string Title
     {
         get => sceneTitle;
@@ -23,6 +32,14 @@ public class DialogueScene
     {
         get => requiredLevel;
     }
+    public int NPCID
+    {
+        get => npcID;
+        set
+        {
+            npcID = value;
+        }
+    }
     public TextAsset TextFile
     {
         get => textFile;
@@ -31,22 +48,9 @@ public class DialogueScene
     {
         get => dialogueLines;
     }
-    /*
-    private void Awake()
-    {
-        textReader = GameObject.FindGameObjectWithTag("GameController").GetComponent<ReadTextFile>();
-    }
 
-    // Start is called before the first frame update
-    void Start()
+    public DialogueLine GetLine(int index)
     {
-        textReader.SplitText(textFile.text, dialogueLines, this);
+        return dialogueLines[index];
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    */
 }

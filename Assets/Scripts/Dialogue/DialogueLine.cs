@@ -8,6 +8,11 @@ public class DialogueLine
     [SerializeField] string dialogueText;
     [SerializeField] DialogueResponse response;
 
+    public DialogueResponse Response
+    {
+        get => response;
+    }
+
     public DialogueLine(string text, string flag)
     {
         dialogueText = text;

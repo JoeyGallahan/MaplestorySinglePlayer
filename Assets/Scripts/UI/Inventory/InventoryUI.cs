@@ -11,6 +11,8 @@ public class InventoryUI : MonoBehaviour
     InventoryGrid equipGrid, useGrid, etcGrid;
     ItemDB itemDB;
     [SerializeField] GameObject equipParent, useParent, etcParent;
+    [SerializeField] Button equipButton, useButton, etcButton;
+    [SerializeField] Sprite buttonSelected, buttonDefault;
 
     private void Awake()
     {
@@ -44,6 +46,10 @@ public class InventoryUI : MonoBehaviour
         equipParent.SetActive(true);
         useParent.SetActive(false);
         etcParent.SetActive(false);
+
+        equipButton.GetComponent<Image>().sprite = buttonSelected;
+        useButton.GetComponent<Image>().sprite = buttonDefault;
+        etcButton.GetComponent<Image>().sprite = buttonDefault;
     }
 
     public void SwitchToUse()
@@ -51,6 +57,10 @@ public class InventoryUI : MonoBehaviour
         equipParent.SetActive(false);
         useParent.SetActive(true);
         etcParent.SetActive(false);
+
+        equipButton.GetComponent<Image>().sprite = buttonDefault;
+        useButton.GetComponent<Image>().sprite = buttonSelected;
+        etcButton.GetComponent<Image>().sprite = buttonDefault;
     }
 
     public void SwitchToEtc()
@@ -58,6 +68,10 @@ public class InventoryUI : MonoBehaviour
         equipParent.SetActive(false);
         useParent.SetActive(false);
         etcParent.SetActive(true);
+
+        equipButton.GetComponent<Image>().sprite = buttonDefault;
+        useButton.GetComponent<Image>().sprite = buttonDefault;
+        etcButton.GetComponent<Image>().sprite = buttonSelected;
     }
 
     public void AddToGrid(int id, int amount = 1)

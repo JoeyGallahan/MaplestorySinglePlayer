@@ -131,6 +131,9 @@ MonoBehaviour:
   health: 3
   level: 1
   touchDamage: 10
+  maxPatrolDistance: 5
+  moveSpeed: 5
+  maxFollowDistance: 10
 --- !u!114 &1794735221110724174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,10 +204,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35db8d8bb17b6124da8d745ebef7baf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nonEnvironmentCollisions: []
   gravity: -0.05
   velocity: {x: 0, y: 0, z: 0}
   grounded: 0
   enableGravity: 1
-  collisionRange: 0.1
+  collisionRange: 0.25
   horizontalRayCount: 6
   verticalRayCount: 6

@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ReadTextFile: MonoBehaviour
 {
     char delimiter = '|';
-    string[] responseFlags = 
+    string[] responseFlags =
     {
+        "[NPC_ID]",
         "[TITLE]",
+        "[ITEM_ID]",
+        "[ENEMY_ID]",
         "[OK]",
         "[NEXT]",
         "[ACCEPT]"
@@ -20,14 +24,23 @@ public class ReadTextFile: MonoBehaviour
         for (int i = 0; i < splitTexts.Length; i++) //Go through each one and create a new Dialogue Line
         {
             string flag = GetFlags(splitTexts[i]);
+            splitTexts[i] = splitTexts[i].Replace(flag, "");
 
-            if (!flag.Equals(responseFlags[0]))
+            if (!flag.Equals(responseFlags[0]) && !flag.Equals(responseFlags[1])) //If the flag is not the title or NPC ID
             {
-                dialogueLines.Add(new DialogueLine(splitTexts[i], flag));
+                dialogueLines.Add(new DialogueLine(splitTexts[i], flag)); //This is a dialogue line
             }
-            else
+            else if (flag.Equals(responseFlags[0]))
             {
-                scene.Title = splitTexts[i];
+                short id;
+                if (Int16.TryParse(splitTexts[i], out id))
+                {
+                    scene.NPCID = id;
+                }
+            }
+            else if (flag.Equals(responseFlags[1]))
+            {
+                scene.Title = splitTexts[i].Replace("\n", "");
             }
         }
     }

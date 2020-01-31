@@ -1,3 +1,4 @@
+0[NPC_ID]|
 Yeehaw[TITLE]|
 REEEEEEE
 I don't understand[NEXT]|

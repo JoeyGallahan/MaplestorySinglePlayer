@@ -49,6 +49,7 @@ TagManager:
   - FadeToBlack
   - Wall
   - DialogueCanvas
+  - DialogueText
   layers:
   - Default
   - TransparentFX

@@ -8,20 +8,22 @@ public class DialogueSelectionUI : MonoBehaviour
 {
     [SerializeField] GameObject dialogueOptionPrefab;
     GameObject gridView;
-    NPCDialogueScenes dialogueScenes;
+    NPCDialogueScenes dialogueList;
+    List<DialogueScene> scenes;
 
-    public NPCDialogueScenes DialogueScenes
+    public List<DialogueScene> DialogueScenes
     {
-        get => dialogueScenes;
+        get => scenes;
         set
         {
-            dialogueScenes = value;
+            scenes = value;
         }
     }
 
     private void Awake()
     {
         gridView = GetComponentInChildren<ContentSizeFitter>().gameObject;
+        dialogueList = GameObject.FindGameObjectWithTag("GameController").GetComponent<NPCDialogueScenes>();
     }
 
     // Start is called before the first frame update
@@ -40,20 +42,18 @@ public class DialogueSelectionUI : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-    public void OpenSelection(GameObject npc)
+    public void OpenSelection(NpcCharacter npc)
     {
         gameObject.SetActive(true);
 
-        dialogueScenes = npc.GetComponent<NPCDialogueScenes>();
+        scenes = dialogueList.GetScenesByNPCID(npc.NPCID);
         UpdateGrid();
     }
 
     private void UpdateGrid()
     {
         KillGrid();
-
-        List<DialogueScene> scenes = dialogueScenes.scenes;
-
+        
         for (int i = 0; i < scenes.Count; i++)
         {
             GameObject newObj;
@@ -61,8 +61,9 @@ public class DialogueSelectionUI : MonoBehaviour
 
             TextMeshProUGUI dialogueTitle = newObj.GetComponentInChildren<TextMeshProUGUI>();
             dialogueTitle.SetText(scenes[i].Title);
-        }
 
+            newObj.GetComponent<DialogueSceneID>().SceneID = scenes[i].SceneID;
+        }
     }
 
     private void KillGrid()
@@ -73,5 +74,4 @@ public class DialogueSelectionUI : MonoBehaviour
         }
 
     }
-
 }

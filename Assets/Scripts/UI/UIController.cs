@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     InventoryUI inventoryUI;
     UIEffects uiEffects;
     DialogueSelectionUI dialogueSelectionUI;
+    DialogueUI actualDialogueUI;
 
     private void Awake()
     {
@@ -25,6 +26,7 @@ public class UIController : MonoBehaviour
 
         uiEffects = GameObject.FindGameObjectWithTag("EffectsCanvas").GetComponent<UIEffects>();
         dialogueSelectionUI = GameObject.FindGameObjectWithTag("DialogueCanvas").GetComponentInChildren<DialogueSelectionUI>();
+        actualDialogueUI = GameObject.FindGameObjectWithTag("DialogueCanvas").GetComponentInChildren<DialogueUI>();
     }
 
     // Start is called before the first frame update
@@ -104,7 +106,7 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void ToggleDialogueSelection(bool maybe, GameObject npc)
+    public void ToggleDialogueSelection(bool maybe, NpcCharacter npc)
     {
         if (maybe)
         {
@@ -113,6 +115,18 @@ public class UIController : MonoBehaviour
         else
         {
             dialogueSelectionUI.CloseSelection();
+        }
+    }
+
+    public void ToggleActualDialogue(bool maybe, int sceneID)
+    {
+        if (maybe)
+        {
+            actualDialogueUI.OpenDialogue(sceneID);
+        }
+        else
+        {
+            actualDialogueUI.CloseDialogue();
         }
     }
 }

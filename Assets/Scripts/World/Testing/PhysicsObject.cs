@@ -89,7 +89,7 @@ public class PhysicsObject : MonoBehaviour
                     {
                         if (hit.collider.gameObject.layer == environmentLayer && hit.collider.tag.Equals("Platform")) //If it's in the environment layer
                         {
-                            velocity.y = 0.0f; //stop the player from moving
+                            velocity.y = -hit.distance;//snaps the object to the ground exactly where the ray hit
                             groundedThisFrame = true; //it's now grounded
                         }
                         else

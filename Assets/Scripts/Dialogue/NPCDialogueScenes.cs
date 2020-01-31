@@ -10,7 +10,7 @@ public class NPCDialogueScenes : MonoBehaviour
 
     private void Awake()
     {
-        textReader = GameObject.FindGameObjectWithTag("GameController").GetComponent<ReadTextFile>();
+        textReader = GetComponent<ReadTextFile>();
     }
 
     private void Start()
@@ -19,5 +19,33 @@ public class NPCDialogueScenes : MonoBehaviour
         {
             textReader.SplitText(scenes[i].TextFile.text, scenes[i].DialogueLines, scenes[i]);
         }
+    }
+
+    public List<DialogueScene> GetScenesByNPCID(int id)
+    {
+        List<DialogueScene> npcScenes = new List<DialogueScene>();
+
+        for (int i = 0; i < scenes.Count; i++) //Go through our list of scenes
+        {
+            if (scenes[i].NPCID == id) //If the ID matches the one we're looking for
+            {
+                npcScenes.Add(scenes[i]); //add it to the list
+            }
+        }
+
+        return npcScenes; //return our list
+    }
+
+    public DialogueScene GetSceneByID(int id)
+    {
+        foreach (DialogueScene scene in scenes)
+        {
+            if (scene.SceneID == id)
+            {
+                return scene;
+            }
+        }
+
+        return null;
     }
 }

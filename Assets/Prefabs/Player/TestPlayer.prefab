@@ -4778,7 +4778,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5615952965786364389}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.54, y: -0.43, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8037820972720758244}
@@ -4894,6 +4894,7 @@ MonoBehaviour:
   baseAttackRange: 1
   level: 1
   experience: 0
+  ui: {fileID: 0}
 --- !u!61 &6346648909966502372
 BoxCollider2D:
   m_ObjectHideFlags: 0

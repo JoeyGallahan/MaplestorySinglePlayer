@@ -53,7 +53,7 @@ public class NPCDoubleClick : MonoBehaviour
 
             clicked = false;
 
-            uiController.ToggleDialogueSelection(true, gameObject);
+            uiController.ToggleDialogueSelection(true, gameObject.GetComponent<NpcCharacter>());
         }
     }
 }
