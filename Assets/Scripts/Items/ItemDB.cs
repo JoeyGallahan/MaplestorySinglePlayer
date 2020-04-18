@@ -2,9 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemDB : MonoBehaviour
+public sealed class ItemDB : MonoBehaviour
 {
     [SerializeField] List<Item> items = new List<Item>();
+    private static ItemDB instance = null;
+    private static readonly object padlock = new object();
+
+    ItemDB(){}
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    public static ItemDB Instance
+    {
+        get
+        {
+            lock (padlock)
+            {
+                if (instance == null)
+                {
+                    instance = new ItemDB();
+                }
+                return instance;
+            }
+        }
+    }
 
     public Item GetItemByID(int id)
     {

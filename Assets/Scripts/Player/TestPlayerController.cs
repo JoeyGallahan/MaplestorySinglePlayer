@@ -18,13 +18,13 @@ public class TestPlayerController : MonoBehaviour
     Quaternion facingRight = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
     //States
-    [SerializeField] bool climbing = false;
+    bool climbing = false;
     bool jumping = false;
-    [SerializeField] bool touchingRope = false;
+    bool touchingRope = false;
 
     //Taking Damage
-    [SerializeField] float damageTime;
-    [SerializeField] bool damaged = false;
+    float damageTime;
+    bool damaged = false;
 
     //Basic Attack
     [SerializeField] bool canAttack = true;

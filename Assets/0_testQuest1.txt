@@ -1,0 +1,4 @@
+0[NPC_ID]|
+KILL[PROMPT]|
+Test kill Quest[TITLE]|
+Go kill 2[AMOUNT_ENEMY] 0[ENEMY_ID][ACCEPT] 

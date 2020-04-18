@@ -234,7 +234,7 @@ public class PhysicsObject : MonoBehaviour
         {
             velocity.x = 0f;
         }
-        transform.position += velocity;
+        transform.position += (velocity);
     }
 
     //Applies gravity to the object
@@ -248,7 +248,7 @@ public class PhysicsObject : MonoBehaviour
             }
             else
             {
-                velocity.y = gravity; //otherwise, make it move down at the speed of gravity
+                velocity.y = (gravity); //otherwise, make it move down at the speed of gravity
             }
         }
     }

@@ -17,6 +17,7 @@ public class NPCDialogueScenes : MonoBehaviour
     {
         for (int i = 0; i < scenes.Count; i++)
         {
+            scenes[i].SceneID = i + 6;
             textReader.SplitText(scenes[i].TextFile.text, scenes[i].DialogueLines, scenes[i]);
         }
     }

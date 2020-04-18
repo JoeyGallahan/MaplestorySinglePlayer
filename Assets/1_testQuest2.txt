@@ -1,0 +1,4 @@
+0[NPC_ID]|
+FETCH[PROMPT]|
+Test Fetch Quest[TITLE]|
+Bring back 5[AMOUNT_ITEM] 3[ITEM_ID][ACCEPT]

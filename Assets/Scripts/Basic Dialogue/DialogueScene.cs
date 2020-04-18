@@ -11,7 +11,7 @@ public class DialogueScene
     [SerializeField] int requiredLevel;
     [SerializeField] TextAsset textFile;
     [SerializeField] List<DialogueLine> dialogueLines = new List<DialogueLine>();
-
+    
     public int SceneID
     {
         get => sceneID;

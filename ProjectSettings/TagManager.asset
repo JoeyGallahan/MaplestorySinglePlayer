@@ -50,6 +50,9 @@ TagManager:
   - Wall
   - DialogueCanvas
   - DialogueText
+  - WallRight
+  - WallLeft
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

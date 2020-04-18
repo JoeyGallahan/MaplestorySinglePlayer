@@ -8,7 +8,7 @@ public class DialogueUI : MonoBehaviour
 {
     [SerializeField]Button rightButton;
     TextMeshProUGUI dialogueLineText;
-    NPCDialogueScenes dialogueDB;
+    QuestList dialogueDB;
     DialogueScene currentScene;
     DialogueResponse currentResponse;
     int currentLineIndex = 0;
@@ -16,7 +16,7 @@ public class DialogueUI : MonoBehaviour
     private void Awake()
     {
         dialogueLineText = GameObject.FindGameObjectWithTag("DialogueText").GetComponent<TextMeshProUGUI>();
-        dialogueDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<NPCDialogueScenes>();
+        dialogueDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<QuestList>();
     }
 
     // Start is called before the first frame update
@@ -42,7 +42,7 @@ public class DialogueUI : MonoBehaviour
     {
         gameObject.SetActive(true); //open the dialogue screen
 
-        currentScene = dialogueDB.GetSceneByID(sceneID); //get the scene that we clicked on
+        currentScene = dialogueDB.GetQuestDialogueByID(sceneID); //get the scene that we clicked on
 
         UpdateDialogueText();
         SetupResponse();

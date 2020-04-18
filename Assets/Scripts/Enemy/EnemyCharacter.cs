@@ -18,6 +18,7 @@ public class EnemyCharacter : MonoBehaviour
     [SerializeField] float maxFollowDistance = 10.0f;
 
     bool dead;
+    [SerializeField]EnemySpawn enemySpawn;
 
     public float MaxPatrolDistance { get => maxPatrolDistance; }
     public float MoveSpeed { get => moveSpeed; }
@@ -44,6 +45,8 @@ public class EnemyCharacter : MonoBehaviour
             health = 0;
             animations.SetInteger("Health", 0);
             dead = true;
+            enemySpawn = GetComponentInParent<EnemySpawn>();
+            enemySpawn.RemoveEnemy(this.gameObject);
             Die();
         }
     }

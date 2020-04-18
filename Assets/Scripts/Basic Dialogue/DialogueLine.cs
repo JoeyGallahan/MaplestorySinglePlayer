@@ -31,5 +31,9 @@ public class DialogueLine
     public string DialogueText
     {
         get => dialogueText;
+        set
+        {
+            dialogueText = value;
+        }
     }
 }

@@ -9,6 +9,7 @@ public class DialogueSelectionUI : MonoBehaviour
     [SerializeField] GameObject dialogueOptionPrefab;
     GameObject gridView;
     NPCDialogueScenes dialogueList;
+    QuestList questList;
     List<DialogueScene> scenes;
 
     public List<DialogueScene> DialogueScenes
@@ -24,6 +25,7 @@ public class DialogueSelectionUI : MonoBehaviour
     {
         gridView = GetComponentInChildren<ContentSizeFitter>().gameObject;
         dialogueList = GameObject.FindGameObjectWithTag("GameController").GetComponent<NPCDialogueScenes>();
+        questList = GameObject.FindGameObjectWithTag("GameController").GetComponent<QuestList>();
     }
 
     // Start is called before the first frame update
@@ -46,7 +48,14 @@ public class DialogueSelectionUI : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        scenes = dialogueList.GetScenesByNPCID(npc.NPCID);
+        scenes = dialogueList.GetScenesByNPCID(npc.NPCID); //Get all of their regular dialogue
+
+        //Get all of their relevant quest dialogues
+        foreach (DialogueScene questDiag in questList.GetQuestDialogueByNPCID(npc.NPCID))
+        {
+            scenes.Add(questDiag);
+        }
+
         UpdateGrid();
     }
 
