@@ -1,4 +1,0 @@
-0[NPC_ID]|
-MULTI[PROMPT]|
-Test MULTI Quest[TITLE]|
-Go kill 2[AMOUNT_ENEMY] 0[ENEMY_ID] and bring back 5[AMOUNT_ITEM] 3[ITEM_ID][ACCEPT] 

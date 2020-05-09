@@ -5,44 +5,34 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     //Other instances we need to control the player
-    PlayerCharacter playerCharacter;
     Animator animations;
-    Rigidbody2D rb;
-
-    //Player states
-    [SerializeField] bool grounded = true;
-    [SerializeField] bool climbing = false;
-    [SerializeField] bool touchingRope = false;
-    [SerializeField] bool touchingTeleport = false;
-
-    //Movement and rotations
-    Vector3 movement = Vector3.zero;
-    float horInput = 0.0f;
-    Quaternion facingLeft = Quaternion.Euler(Vector3.zero);
-    Quaternion facingRight = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-    GameObject nextTeleportLocation;
-    Vector3 teleportCameraLoc;
-
-    //Layers
-    int playerLayer;
-    int environmentLayer;
-    int itemLayer = 12;
-    LayerMask enemyLayer;
-    
-    //Attacks
-    [SerializeField] bool canAttack = true;
-    float attackTime;
-
-    //Damage
-    [SerializeField] float damageTime;
-    [SerializeField] bool damaged = false;
-
-    float defaultGravity;
-
+    PhysicsObject physicsObject;
     UIController uiController;
     SkillDB skillDB;
 
+    //Movement
+    float horInput = 0.0f;
+    float verInput = 0.0f;
+    Quaternion facingLeft = Quaternion.Euler(Vector3.zero);
+    Quaternion facingRight = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+
+    //States
+    bool climbing = false;
+    bool jumping = false;
+    bool touchingRope = false;
+
+    //Taking Damage
+    float damageTime;
+    bool damaged = false;
+
+    //Basic Attack
+    [SerializeField] bool canAttack = true;
+    float attackTime;
+    
+    //Teleporting
     bool teleporting = false;
+    bool touchingTeleport = false;
+    Teleport nextTeleportLocation;
 
     //Inventory
     [SerializeField] GameObject itemTouching;
@@ -50,23 +40,20 @@ public class PlayerController : MonoBehaviour
     PlayerInventory inventory;
     GameObject weaponSlot;
 
-    private void Awake()
+    //Layers
+    int playerLayer;
+    int environmentLayer;
+    int itemLayer = 12;
+    LayerMask enemyLayer;
+
+    void Awake()
     {
-        playerCharacter = GetComponent<PlayerCharacter>();
-        movement.z = transform.position.z;
-
-        rb = GetComponent<Rigidbody2D>();
-
         animations = GetComponentInChildren<Animator>();
+        physicsObject = GetComponent<PhysicsObject>();
 
         playerLayer = LayerMask.NameToLayer("Player");
         environmentLayer = LayerMask.NameToLayer("Environment");
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
-
-        defaultGravity = rb.gravityScale;
-
-        Physics2D.IgnoreLayerCollision(playerLayer, itemLayer, true);
-        Physics2D.IgnoreLayerCollision(playerLayer, 13, true);
 
         inventory = GetComponent<PlayerInventory>();
         itemDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
@@ -75,16 +62,19 @@ public class PlayerController : MonoBehaviour
 
         weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
     }
+
     private void Start()
     {
         inventory.AddToInventory(0, 5);
         inventory.AddToInventory(4, 5);
-
-        switch (playerCharacter.ClassName)
+        
+        switch (PlayerCharacter.Instance.ClassName)
         {
-            case "Warrior": inventory.AddToInventory(3);
+            case "Warrior":
+                inventory.AddToInventory(3);
                 break;
-            case "Mage": inventory.AddToInventory(5);
+            case "Mage":
+                inventory.AddToInventory(5);
                 break;
         }
     }
@@ -92,246 +82,130 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Actions
+        CheckSpecialCollisions();
+        Movement();
         PerformActions();
         UpdateTimings();
-
-        //Animations should probably be last so that it depends on everything else that happened this frame
-        UpdateAnimation();
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            inventory.DebugInv();
-        }
     }
 
     private void FixedUpdate()
     {
-        Movement();
+        Jump(); //Jump is causing issues by going extremely high with only minor drops in framerate so it's going here until it can learn to behave
     }
 
-    private bool CanMove()
+    private void LateUpdate()
     {
-        if (!climbing && canAttack)
-        {
-            return true;
-        }
-
-        return false;
+        UpdateAnimation();
     }
 
-    private void HorizontalInput()
-    {
-        if (CanMove())
-        {
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                horInput = playerCharacter.MoveSpeed;
-                transform.rotation = facingRight;
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                horInput = -playerCharacter.MoveSpeed;
-                transform.rotation = facingLeft;
-            }
-            else
-            {
-                horInput = 0.0f;
-            }
-
-            rb.velocity = new Vector2(horInput, rb.velocity.y);
-        }
-    }
-
-    private void VerticalInput()
-    {
-        if (touchingRope)
-        {
-            if (!climbing && Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
-            {
-                InitClimb();
-            }
-            if (climbing)
-            {
-                if (Input.GetKey(KeyCode.UpArrow))
-                {
-                    rb.velocity = new Vector2(0, playerCharacter.ClimbSpeed);
-                }
-                else if (Input.GetKey(KeyCode.DownArrow))
-                {
-                    rb.velocity = new Vector2(0, -playerCharacter.ClimbSpeed);
-                }
-                else
-                {
-                    rb.velocity = Vector2.zero;
-                }
-            }
-        }
-    }
-
-    //Initializes climbing
-    private void InitClimb()
-    {
-        climbing = true;  //you are now climbing
-        rb.gravityScale = 0.0f; //you're no longer affected by gravity
-        rb.velocity = Vector2.zero; //You have no more velocity. just boom. stopped.
-        Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, true); //Ignore collision with platforms
-    }
-
-    //Makes the player jump
-    private void Jump()
-    {
-        //If you're on the ground or climbing and you press the jump key
-        if ((grounded || climbing) && Input.GetKey(KeyCode.Space))
-        {
-            grounded = false; //You're no longer grounded
-            rb.velocity = Vector2.zero; //prevents the player from shooting up into the sky if they were already moving up on the rope
-
-            if (climbing) //If you were climbing
-            {
-                climbing = false; //You're not climbing anymore
-                rb.gravityScale = defaultGravity; //Reset the gravity 
-                Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, false); //You can collide with platforms again
-            }
-
-            Vector2 jump = new Vector2(0, playerCharacter.JumpSpeed); //Get a nice force for your jump
-            rb.AddForce(jump, ForceMode2D.Impulse); //apply the force to the player
-        }
-    }
-    
-    //Updates the players jumping, walking, and idle animations
-    private void UpdateAnimation()
-    {
-        animations.SetBool("Grounded", grounded);
-        if (grounded)
-        {
-            animations.SetFloat("Speed", Mathf.Abs(horInput));
-        }
-    }
-
-    //Determines if you can use a basic attack and will call the appropriate methods to do so
-    private void Attack()
-    {
-        if (canAttack) //If it is possible for you to do this
-        {
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) //And you hit the proper keys
-            {
-                movement = Vector3.zero; //stop all movement
-                animations.SetBool("Attacking", true); //Start the attack animation
-                BasicAttack(); //Actually attack
-                canAttack = false; //Can't immediately attack until the cooldown is up
-            }
-        }
-    }
-
-    //Performs a basic attack
-    private void BasicAttack()
-    {
-        if (grounded)
-        {
-            //Make it so they can't move horizontally while attacking
-            Vector3 newVel = Vector3.zero;
-            newVel.y = rb.velocity.y;
-            rb.velocity = newVel;
-        }
-
-        float attackRange = playerCharacter.BaseAttackRange; //Get your base attack range
-        int attackDamage = playerCharacter.GetDamage(); //Get your base damage
-
-        if (playerCharacter.Equips.GetWeapon() != null) //If you have a weapon equipped
-        {
-            attackRange = playerCharacter.Equips.GetWeapon().AttackRange; //Update the range to the range of the weapon.
-            //We dont need to update the attack damage because that's already accounted for in the GetDamage() method
-        }
-
-        RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer); //Find an enemy within range
-
-        //If you hit an enemy
-        if (hit.transform != null)
-        {
-            EnemyController enemyHit = hit.transform.gameObject.GetComponent<EnemyController>(); //Get the enemy controller
-
-            int expGained = enemyHit.TakeDamage(attackDamage, -weaponSlot.transform.right); //Make the enemy take damage and get the exp earned from this
-
-            if(expGained > 0) //If you actually gained some exp
-            {
-                playerCharacter.Experience += expGained; //Add it to your player
-                uiController.AddGain(expGained.ToString(), "XP"); //Show it on the Gains UI
-            }
-
-        }
-
-    }
-
-    //Pickup the item you are touching
-    private void PickupItem()
-    {
-        if (itemTouching != null)
-        {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                ItemID item = itemTouching.GetComponent<ItemID>();
-
-                uiController.AddGain(itemDB.GetItemName(item.itemID), "Item"); //Shows the item you picked up in the Gains UI
-                inventory.AddToInventory(item.itemID); //Adds the item to the inventory
-                item.Pickup(); //Removes the physical item from the scene
-            }
-        }
-    }
-
-    //Updates the time since the player last used a basic attack. Essentially a cooldown.
-    private void UpdateAttackTime()
-    {
-        float attackSpeed = playerCharacter.BaseAttackSpeed;
-        if (playerCharacter.Equips.GetWeapon() != null)
-        {
-            attackSpeed = playerCharacter.Equips.GetWeapon().AttackSpeed;
-        }
-
-        if (!canAttack)
-        {
-            attackTime += Time.deltaTime;
-
-            if (attackTime >= (1 / attackSpeed))
-            {
-                attackTime = 0;
-                canAttack = true;
-                animations.SetBool("Attacking", false);
-            }
-        }
-    }
-
-    //Updates the time since you were last damaged by an enemy. This prevents the player from basically being spam-attacked
-    private void UpdateDamageTime()
-    {
-        if (damaged)
-        {
-            damageTime += Time.deltaTime;
-
-            if (damageTime >= 1)
-            {
-                damageTime = 0;
-                damaged = false;
-            }
-        }
-    }
-
-    //Calls the appropriate methods to update the player's movement
+    //Perform all actions related to movement
     private void Movement()
     {
         HorizontalInput();
         VerticalInput();
-        Jump();
+        
+        physicsObject.SetVelX(horInput * Time.deltaTime);
+
+        if (climbing)
+        {
+            physicsObject.SetVelY(verInput * Time.deltaTime);
+        }
     }
 
-    //Calls the appropriate methods to perform simple actions like basic attacks, picking up items, and moving to new maps
-    private void PerformActions()
+    //Controls the player moving left and right
+    private void HorizontalInput()
     {
-        Attack();
-        PickupItem();
-        ActivateTeleport();
+        if (CanMove()) //If you can move
+        {
+            if (Input.GetKey(KeyCode.RightArrow)) //If you press the key to move right
+            {
+                horInput = PlayerCharacter.Instance.MoveSpeed; //Apply the movespeed to the horizontal input
+                transform.rotation = facingRight; //Make the player face right
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow)) //If you press the key to move left
+            {
+                horInput = -PlayerCharacter.Instance.MoveSpeed; //Apply the movespeed to the horizontal input
+                transform.rotation = facingLeft; //Make the player face left
+            }
+            else
+            {
+                horInput = 0.0f; //If you havent pressed anything, immediately stop the player from moving
+            }            
+        }
     }
-    
+
+    //Controls the player jumping
+    private void Jump()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (physicsObject.grounded || climbing) //Don't want to jump if you're not on the ground or climbing
+            {
+                jumping = false; //resets the jump variable for when you hit the ground
+                climbing = false; //reset the climbing because you just jumped off a rope
+
+                physicsObject.enableGravity = true; //Just in case you jumped off a rope
+
+                physicsObject.grounded = false; //No longer on the ground
+                physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.deltaTime); //Jump
+                jumping = true; //you're now jumping
+            }
+        }
+    }
+
+    //Initializes the variables and velocities for starting your climb
+    private void InitClimbing()
+    {
+        climbing = true;
+        physicsObject.enableGravity = false;
+        physicsObject.grounded = false;
+        horInput = 0f;
+        verInput = 0f;
+        physicsObject.SetVelocity(Vector3.zero);
+    }
+
+    //Controls the player moving up and down a rope
+    private void VerticalInput()
+    {
+        if (touchingRope)
+        {
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                if (!climbing)
+                {
+                    InitClimbing();
+                }
+                verInput = PlayerCharacter.Instance.ClimbSpeed; 
+            }
+            else if (Input.GetKey(KeyCode.DownArrow))
+            {
+                if (!climbing)
+                {
+                    InitClimbing();
+                }
+
+                verInput = -PlayerCharacter.Instance.ClimbSpeed;
+            }
+            else
+            {
+                verInput = 0f;
+            }
+        }
+        else if (climbing) //If you're not touching the rope, but still technically climbing
+        {
+            climbing = false; //no longer climbing
+            physicsObject.SetVelY(0f); //reset your velocity
+
+            if (verInput > 0) //If you were climbing up
+            {
+                physicsObject.AddForce(new Vector3(0f, 20f * Time.deltaTime, 0f)); //Give the player a little boost so they can get up to the platform
+            }
+
+            verInput = 0f;
+            physicsObject.enableGravity = true; //Reenable gravity
+        }
+    }
+
     //Activates the teleporting sequence
     private void ActivateTeleport()
     {
@@ -356,9 +230,106 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = nextTeleportLocation.transform.position; //move the player
 
-        Camera.main.transform.position = teleportCameraLoc; //Snaps the camera to the player's new position
+        Camera.main.transform.position = nextTeleportLocation.cameraLoc; //Snaps the camera to the player's new position
 
         uiController.FadeInFromBlack(); //Fade back in
+    }
+
+    //Returns whether or not a player can move
+    private bool CanMove()
+    {
+        if (!climbing)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private void PerformActions()
+    {
+        Attack();
+        ActivateTeleport();
+        PickupItem();
+    }
+
+    //Determines if you can use a basic attack and will call the appropriate methods to do so
+    private void Attack()
+    {
+        if (canAttack) //If it is possible for you to do this
+        {
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) //And you hit the proper keys
+            {
+                animations.SetBool("Attacking", true); //Start the attack animation
+                BasicAttack(); //Actually attack
+                canAttack = false; //Can't immediately attack until the cooldown is up
+            }
+        }
+    }
+
+    //Performs a basic attack
+    private void BasicAttack()
+    {
+        if (physicsObject.grounded)
+        {
+            //Make it so they can't move horizontally while attacking
+            Vector3 newVel = Vector3.zero;
+            newVel.y = physicsObject.GetVelocity().y;
+            physicsObject.SetVelocity(newVel);
+        }
+
+        float attackRange = PlayerCharacter.Instance.BaseAttackRange; //Get your base attack range
+        int attackDamage = PlayerCharacter.Instance.GetDamage(); //Get your base damage
+
+        if (PlayerCharacter.Instance.Equips.GetWeapon() != null) //If you have a weapon equipped
+        {
+            attackRange = PlayerCharacter.Instance.Equips.GetWeapon().AttackRange; //Update the range to the range of the weapon.
+            //We dont need to update the attack damage because that's already accounted for in the GetDamage() method
+        }
+
+        RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer); //Find an enemy within range
+
+        //If you hit an enemy
+        if (hit.transform != null)
+        {
+            EnemyController enemyHit = hit.transform.gameObject.GetComponent<EnemyController>(); //Get the enemy controller
+
+            int expGained = enemyHit.TakeDamage(attackDamage, -weaponSlot.transform.right); //Make the enemy take damage and get the exp earned from this
+
+            if (expGained > 0) //If you actually gained some exp
+            {
+                PlayerCharacter.Instance.Experience += expGained; //Add it to your player
+                uiController.AddGain(expGained.ToString(), "XP"); //Show it on the Gains UI
+            }
+
+        }
+
+    }
+
+    //Pickup the item you are touching
+    private void PickupItem()
+    {
+        if (itemTouching != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                ItemID item = itemTouching.GetComponent<ItemID>();
+                Debug.Log(itemTouching.name);
+                uiController.AddGain(itemDB.GetItemName(item.itemID), "Item"); //Shows the item you picked up in the Gains UI
+                inventory.AddToInventory(item.itemID); //Adds the item to the inventory
+                item.Pickup(); //Removes the physical item from the scene
+                PlayerCharacter.Instance.AddToQuestItemCounter(item.itemID);
+            }
+        }
+    }
+
+    //Updates the players jumping, walking, and idle animations
+    private void UpdateAnimation()
+    {
+        animations.SetBool("Grounded", physicsObject.grounded);
+        if (physicsObject.grounded)
+        {
+            animations.SetFloat("Speed", Mathf.Abs(horInput));
+        }
     }
 
     //Updates the timings for simple things like taking damage and basic attacks
@@ -367,109 +338,104 @@ public class PlayerController : MonoBehaviour
         UpdateDamageTime();
         UpdateAttackTime();
     }
-       
-    private void OnCollisionEnter2D(Collision2D collision)
+
+
+    //Updates the time since you were last damaged by an enemy. This prevents the player from basically being spam-attacked
+    private void UpdateDamageTime()
     {
-        string tag = collision.gameObject.tag;
-        int layer = collision.gameObject.layer;
-
-
-        if (tag.Equals("Platform"))
+        if (damaged)
         {
-            if (!climbing)
+            damageTime += Time.deltaTime;
+
+            if (damageTime >= 1)
             {
-                grounded = true;
-                movement.y = 0.0f;
+                damageTime = 0;
+                damaged = false;
+            }
+        }
+    }
+
+    //Check for collisions with things like ropes, enemies, items, etc
+    private void CheckSpecialCollisions()
+    {
+        EnemyCharacter enemyCollided = null;
+        GameObject itemTouchedThisFrame = null;
+        bool touchingTeleportThisFrame = false;
+        bool touchingRopeThisFrame = false;
+
+        foreach(GameObject o in physicsObject.nonEnvironmentCollisions)
+        {
+            if (o != null)
+            {
+                if (o.transform.tag.Equals("Rope"))
+                {
+                    touchingRopeThisFrame = true;
+                }
+                else if (o.transform.tag.Equals("Enemy"))
+                {
+                    if (enemyCollided == null)
+                    {
+                        enemyCollided = o.GetComponent<EnemyCharacter>();
+                        TakeTouchDamage(enemyCollided);
+                    }
+                }
+                else if (o.transform.tag.Equals("TeleportPlat"))
+                {
+                    touchingTeleportThisFrame = true;
+                    nextTeleportLocation = o.GetComponent<Teleport>().otherTeleportPlat;
+                }
+                else if (o.transform.tag.Equals("Item"))
+                {
+                    if (itemTouchedThisFrame == null)
+                    {
+                        itemTouchedThisFrame = o;
+                    }
+                }
             }
         }
 
+        itemTouching = itemTouchedThisFrame;
+
+        touchingTeleport = touchingTeleportThisFrame;
+        touchingRope = touchingRopeThisFrame;
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    //Updates the time since the player last used a basic attack. Essentially a cooldown.
+    private void UpdateAttackTime()
     {
-        string tag = collision.gameObject.tag;
-        int layer = collision.gameObject.layer;
-
-        if (layer == environmentLayer)
+        if (!canAttack)
         {
-            grounded = false;
+            float attackSpeed = PlayerCharacter.Instance.BaseAttackSpeed;
+
+            if (PlayerCharacter.Instance.Equips.GetWeapon() != null)
+            {
+                attackSpeed = PlayerCharacter.Instance.Equips.GetWeapon().AttackSpeed;
+            }
+
+            attackTime += Time.deltaTime;
+
+            if (attackTime >= (1 / attackSpeed))
+            {
+                attackTime = 0;
+                canAttack = true;
+                animations.SetBool("Attacking", false);
+            }
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    //Take damage and get knocked back. For when you touched an enemy
+    private void TakeTouchDamage(EnemyCharacter enemy)
     {
-        string tag = collision.gameObject.tag;
+        if (!damaged)
+        {
+            //Knockback
+            physicsObject.grounded = false;
+            physicsObject.SetVelY(0f);
+            Vector2 knockbackForce = Vector2.up * PlayerCharacter.Instance.JumpSpeed * Time.deltaTime;
+            physicsObject.AddForce(knockbackForce);
 
-        if (tag.Equals("Rope"))
-        {
-            touchingRope = true;
-        }
-        else if (tag.Equals("Enemy"))
-        {
-            EnemyCharacter enemy = collision.gameObject.GetComponentInParent<EnemyCharacter>();
+            PlayerCharacter.Instance.TakeDamage(enemy.TouchDamage);
             damaged = true;
-
-            rb.AddForce(Vector2.up * 3.0f, ForceMode2D.Impulse);
-            playerCharacter.TakeDamage(enemy.TouchDamage);
-        }
-        else if (tag.Equals("Item"))
-        {
-            itemTouching = collision.gameObject;
-        }
-        else if (tag.Equals("TeleportPlat"))
-        {
-            touchingTeleport = true;
-            Teleport tele = collision.gameObject.GetComponent<Teleport>();
-
-            //nextTeleportLocation = tele.otherTeleportPlat;
-            teleportCameraLoc = tele.cameraLoc; 
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        string tag = collision.gameObject.tag;
-
-        if (tag.Equals("Enemy") && !damaged)
-        {
-            EnemyCharacter enemy = collision.gameObject.GetComponentInParent<EnemyCharacter>();
-            damaged = true;
-
-            rb.AddForce(Vector2.up * 3.0f, ForceMode2D.Impulse);
-            playerCharacter.TakeDamage(enemy.TouchDamage);
-        }
-        else if (tag.Equals("Item"))
-        {
-            itemTouching = collision.gameObject;
-        }
-        else if (tag.Equals("TeleportPlat"))
-        {
-            touchingTeleport = true;
-            Teleport tele = collision.gameObject.GetComponent<Teleport>();
-
-            //nextTeleportLocation = tele.otherTeleportPlat;
-            teleportCameraLoc = tele.cameraLoc;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        string tag = collision.gameObject.tag;
-
-        if (tag.Equals("Rope"))
-        {
-            touchingRope = false;
-            climbing = false;
-            rb.gravityScale = defaultGravity;
-            Physics2D.IgnoreLayerCollision(playerLayer, environmentLayer, false);
-        }
-        else if (tag.Equals("Item"))
-        {
-            itemTouching = null;
-        }
-        else if (tag.Equals("TeleportPlat"))
-        {
-            touchingTeleport = false;
         }
     }
 }

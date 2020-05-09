@@ -8,15 +8,14 @@ public class DialogueUI : MonoBehaviour
 {
     [SerializeField]Button rightButton;
     TextMeshProUGUI dialogueLineText;
-    QuestList dialogueDB;
-    DialogueScene currentScene;
+    [SerializeField]DialogueScene currentScene;
     DialogueResponse currentResponse;
-    int currentLineIndex = 0;
+    [SerializeField]int currentLineIndex = 0;
+    int currentQuestID = -1;
 
     private void Awake()
     {
         dialogueLineText = GameObject.FindGameObjectWithTag("DialogueText").GetComponent<TextMeshProUGUI>();
-        dialogueDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<QuestList>();
     }
 
     // Start is called before the first frame update
@@ -36,14 +35,15 @@ public class DialogueUI : MonoBehaviour
         gameObject.SetActive(false);
         currentLineIndex = 0;
         currentScene = null;
+        currentQuestID = -1;
     }
 
-    public void OpenDialogue(int sceneID)
+    public void OpenDialogue(int questID)
     {
         gameObject.SetActive(true); //open the dialogue screen
 
-        currentScene = dialogueDB.GetQuestDialogueByID(sceneID); //get the scene that we clicked on
-
+        currentScene = QuestDB.Instance.GetQuestByID(questID).GetCurrentDialogueScene(); //get the scene that we clicked on
+        currentQuestID = questID;
         UpdateDialogueText();
         SetupResponse();
     }
@@ -65,22 +65,37 @@ public class DialogueUI : MonoBehaviour
         {
             case DialogueResponse.ResponseType.CONTINUE: ContinueDialogue();
                 break;
-            case DialogueResponse.ResponseType.ACCEPT: FinishDialogue();
+            case DialogueResponse.ResponseType.ACCEPT: AcceptQuest();
                 break;
             case DialogueResponse.ResponseType.END: FinishDialogue();
+                break;
+            case DialogueResponse.ResponseType.COMPLETE: CompleteDialogue();
                 break;
         }
     }
 
-    public void ContinueDialogue()
+    private void ContinueDialogue()
     {
         currentLineIndex++;
         UpdateDialogueText();
         SetupResponse();
     }
 
-    public void FinishDialogue()
+    private void FinishDialogue()
     {
+        CloseDialogue();
+    }
+
+    private void AcceptQuest()
+    {
+        PlayerCharacter.Instance.ActivateQuest(currentQuestID);
+        QuestDB.Instance.GetQuestByID(currentQuestID).StartQuest();
+        CloseDialogue();
+    }
+
+    private void CompleteDialogue()
+    {
+        QuestDB.Instance.GetQuestByID(currentQuestID).CompleteQuest();
         CloseDialogue();
     }
 }

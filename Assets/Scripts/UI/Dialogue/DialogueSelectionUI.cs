@@ -8,24 +8,13 @@ public class DialogueSelectionUI : MonoBehaviour
 {
     [SerializeField] GameObject dialogueOptionPrefab;
     GameObject gridView;
-    NPCDialogueScenes dialogueList;
-    QuestList questList;
-    List<DialogueScene> scenes;
-
-    public List<DialogueScene> DialogueScenes
-    {
-        get => scenes;
-        set
-        {
-            scenes = value;
-        }
-    }
-
+    QuestDB questDB;
+    [SerializeField] List<Quest> quests = new List<Quest>();
+    
     private void Awake()
     {
         gridView = GetComponentInChildren<ContentSizeFitter>().gameObject;
-        dialogueList = GameObject.FindGameObjectWithTag("GameController").GetComponent<NPCDialogueScenes>();
-        questList = GameObject.FindGameObjectWithTag("GameController").GetComponent<QuestList>();
+        questDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<QuestDB>();
     }
 
     // Start is called before the first frame update
@@ -47,13 +36,16 @@ public class DialogueSelectionUI : MonoBehaviour
     public void OpenSelection(NpcCharacter npc)
     {
         gameObject.SetActive(true);
-
-        scenes = dialogueList.GetScenesByNPCID(npc.NPCID); //Get all of their regular dialogue
-
+        
         //Get all of their relevant quest dialogues
-        foreach (DialogueScene questDiag in questList.GetQuestDialogueByNPCID(npc.NPCID))
+        quests = questDB.GetQuestsByNPCID(npc.NPCID);
+
+        foreach (Quest q in quests)
         {
-            scenes.Add(questDiag);
+            if (q.QuestCompleted)
+            {
+                quests.Remove(q);
+            }
         }
 
         UpdateGrid();
@@ -63,15 +55,15 @@ public class DialogueSelectionUI : MonoBehaviour
     {
         KillGrid();
         
-        for (int i = 0; i < scenes.Count; i++)
+        for (int i = 0; i < quests.Count; i++)
         {
             GameObject newObj;
             newObj = (GameObject)Instantiate(dialogueOptionPrefab, gridView.transform);
 
             TextMeshProUGUI dialogueTitle = newObj.GetComponentInChildren<TextMeshProUGUI>();
-            dialogueTitle.SetText(scenes[i].Title);
+            dialogueTitle.SetText(quests[i].Title);
 
-            newObj.GetComponent<DialogueSceneID>().SceneID = scenes[i].SceneID;
+            newObj.GetComponent<QuestID>().ID = quests[i].QuestID;
         }
     }
 

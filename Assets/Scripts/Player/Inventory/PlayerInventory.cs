@@ -2,8 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInventory : MonoBehaviour
+public sealed class PlayerInventory : MonoBehaviour
 {
+    private static PlayerInventory instance = null;
+    private static readonly object padlock = new object();
+
+    PlayerInventory() { }
+
+    public static PlayerInventory Instance
+    {
+        get
+        {
+            lock (padlock)
+            {
+                if (instance == null)
+                {
+                    instance = new PlayerInventory();
+                }
+                return instance;
+            }
+        }
+    }
+
     Dictionary<int, int> itemIDsAndAmount = new Dictionary<int,int>();
     InventoryUI inventoryUI;
     ItemDB db;
@@ -13,6 +33,8 @@ public class PlayerInventory : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
+
         inventoryUI = GameObject.FindGameObjectWithTag("InventoryCanvas").GetComponentInChildren<InventoryUI>();
 
         db = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();

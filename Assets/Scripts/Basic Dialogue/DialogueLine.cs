@@ -11,6 +11,15 @@ public class DialogueLine
     public DialogueResponse Response
     {
         get => response;
+        set
+        {
+            response = value;
+        }
+    }
+
+    public DialogueLine(string text)
+    {
+        dialogueText = text;
     }
 
     public DialogueLine(string text, string flag)
@@ -26,6 +35,11 @@ public class DialogueLine
             case "[ACCEPT]": response = new DialogueResponse(DialogueResponse.ResponseType.ACCEPT);
                 break;
         }
+    }
+    public DialogueLine(string text, int flag)
+    {
+        dialogueText = text;
+        response = new DialogueResponse((DialogueResponse.ResponseType)flag);
     }
 
     public string DialogueText

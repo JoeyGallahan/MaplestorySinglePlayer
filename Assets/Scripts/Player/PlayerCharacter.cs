@@ -4,6 +4,26 @@ using UnityEngine;
 
 public sealed class PlayerCharacter : MonoBehaviour
 {
+    private static PlayerCharacter instance = null;
+    private static readonly object padlock = new object();
+
+    PlayerCharacter() { }
+    
+    public static PlayerCharacter Instance
+    {
+        get
+        {
+            lock (padlock)
+            {
+                if (instance == null)
+                {
+                    instance = new PlayerCharacter();
+                }
+                return instance;
+            }
+        }
+    }
+
     //Statuses
     private int maxHealth = 100;
     private int maxMana = 100;
@@ -33,12 +53,17 @@ public sealed class PlayerCharacter : MonoBehaviour
     private int experienceToNextLevel = 100;
 
     public PlayerCharacterUI ui;
+    public QuestUI questUI;
 
     //AP
     private int remainingAPPoints = 0;
     private int originalRemaining = 0;
     private Dictionary<string, int> originalAP;
     private Dictionary<string, int> apPoints;
+
+    //Quests
+    [SerializeField] public List<ActiveQuest> activeQuests = new List<ActiveQuest>();
+
     
     public int MaxHealth
     {
@@ -194,10 +219,13 @@ public sealed class PlayerCharacter : MonoBehaviour
     public float BaseAttackSpeed { get => baseAttackSpeed; }
     public EquippedItems Equips { get => equips; }
 
-
     private void Awake()
     {
+        instance = this;
+
         ui = GameObject.FindGameObjectWithTag("CharacterCanvas").GetComponentInChildren<PlayerCharacterUI>();
+        questUI = GameObject.FindGameObjectWithTag("QuestCanvas").GetComponentInChildren<QuestUI>();
+
         originalAP = new Dictionary<string, int>();
         equips = GetComponent<EquippedItems>();
 
@@ -340,5 +368,50 @@ public sealed class PlayerCharacter : MonoBehaviour
         equips.UpdateEquip(type, id);
         UpdateDamageRange();
         ui.AddEquip(type, id);
+    }
+
+    public void ActivateQuest(int questID)
+    {
+        activeQuests.Add(new ActiveQuest(questID));
+        questUI.AddToGrid(questID);
+    }
+
+    public void AddToQuestEnemyCounter(int questID, int enemyID)
+    {
+
+    }
+    public void AddToQuestItemCounter(int itemID)
+    {
+        int index = CheckForQuestItem(itemID);
+
+        if (index > -1)
+        {
+            activeQuests[index].AddToItemProgress(itemID, 1);
+        }
+    }
+    public int CheckForQuestItem(int itemID)
+    {
+        for(int i = 0; i < activeQuests.Count; i++)
+        {
+            if (activeQuests[i].quest.ItemsRequired.ContainsKey(itemID))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public ActiveQuest GetActiveQuestByID(int id)
+    {
+        foreach(ActiveQuest activeQuest in activeQuests)
+        {
+            if (activeQuest.quest.QuestID == id)
+            {
+                return activeQuest;
+            }
+        }
+
+        return null;
     }
 }

@@ -4895,6 +4895,7 @@ MonoBehaviour:
   level: 1
   experience: 0
   ui: {fileID: 0}
+  activeQuests: []
 --- !u!61 &6346648909966502372
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4938,7 +4939,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   grounded: 0
   enableGravity: 1
-  collisionRange: 0.25
+  collisionRange: 0.15
   horizontalRayCount: 6
   verticalRayCount: 6
 --- !u!114 &1608885081344181638
@@ -4965,10 +4966,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b6945f1c98a4847897dde833048707, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbing: 0
-  touchingRope: 0
-  damageTime: 0
-  damaged: 0
   canAttack: 1
   itemTouching: {fileID: 0}
 --- !u!114 &3380227395373578077

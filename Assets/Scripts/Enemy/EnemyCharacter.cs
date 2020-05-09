@@ -8,6 +8,7 @@ public class EnemyCharacter : MonoBehaviour
 
     Animator animations;
 
+    [SerializeField] int enemyID;
     [SerializeField] string enemyName;
     [SerializeField] int experience = 100;
     [SerializeField] int health = 100;
@@ -17,7 +18,8 @@ public class EnemyCharacter : MonoBehaviour
     [SerializeField] float moveSpeed = 5.0f;
     [SerializeField] float maxFollowDistance = 10.0f;
 
-    bool dead;
+    bool dead = false;
+    [SerializeField] List<int> partOfQuests = new List<int>();
     [SerializeField]EnemySpawn enemySpawn;
 
     public float MaxPatrolDistance { get => maxPatrolDistance; }
@@ -65,6 +67,10 @@ public class EnemyCharacter : MonoBehaviour
     private void Die()
     {
         inventory.DropItems(transform.position);
+        foreach(int qID in partOfQuests)
+        {
+            PlayerCharacter.Instance.AddToQuestEnemyCounter(qID, enemyID);
+        }
         Destroy(this.gameObject, animations.GetCurrentAnimatorStateInfo(0).length);
     }
 

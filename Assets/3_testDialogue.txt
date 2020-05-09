@@ -1,6 +1,0 @@
-0[NPC_ID]|
-Test[TITLE]|
-Test 1
-blah blah blah[NEXT]|
-Test 2 yeehaw sssssssssssssssssssssss
-Meow growl testing yeet[OK] 

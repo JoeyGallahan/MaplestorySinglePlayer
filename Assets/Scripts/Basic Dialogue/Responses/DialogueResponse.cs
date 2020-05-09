@@ -9,7 +9,8 @@ public class DialogueResponse
     {
         CONTINUE,
         END,
-        ACCEPT
+        ACCEPT,
+        COMPLETE
     }
 
     [SerializeField] ResponseType responseType;
@@ -25,6 +26,8 @@ public class DialogueResponse
             case ResponseType.END: responseText = "OK";
                 break;
             case ResponseType.ACCEPT: responseText = "ACCEPT";
+                break;
+            case ResponseType.COMPLETE:responseText = "COMPLETE";
                 break;
         }
     }

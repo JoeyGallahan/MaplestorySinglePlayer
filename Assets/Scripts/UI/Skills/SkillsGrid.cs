@@ -16,7 +16,6 @@ public class SkillsGrid : MonoBehaviour
         skillName.SetText(skill.skillName);
 
         Image skillImage = newObj.GetComponentInChildren<Image>();
-        //skillImage.GetComponentInChildren<SpriteRenderer>().sprite = skill.skillSprite;
     }
     public void AddToGrid(GameObject prefab, List<Skill> skills)
     {
@@ -30,9 +29,6 @@ public class SkillsGrid : MonoBehaviour
 
             GameObject sprite = (GameObject)Instantiate(skill.skillSprite, newObj.transform);
             sprite.transform.localScale = new Vector3(0.75f, 0.75f);
-
-            //Image skillImage = newObj.GetComponentInChildren<Image>();
-            //skillImage.sprite = skill.skillSprite;
         }
     }
 }

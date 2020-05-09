@@ -1,13 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 [System.Serializable]
-public class QuestPrompt
+public class QuestInProgress
 {
     public DialogueScene dialogue;
 
-    public QuestPrompt() { }
 
+    public QuestInProgress() { dialogue = new DialogueScene(); }
 }

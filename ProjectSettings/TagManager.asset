@@ -53,6 +53,7 @@ TagManager:
   - WallRight
   - WallLeft
   - SpawnPoint
+  - QuestCanvas
   layers:
   - Default
   - TransparentFX

@@ -1,0 +1,56 @@
+<Quests>
+<Quest id="0" name="Test XML Fetch Quest">
+	<NPC_ID>0</NPC_ID>
+	<Type>FETCH</Type>
+	<Description>Boy do I need some potions...</Description>
+	<Level>1</Level>
+	<Prompt>	
+		<Item_ID>0</Item_ID>
+		<Item_Amount>2</Item_Amount>
+		<Dialogue>
+			<Line>I sure could use a pick-me-up.<Response>NEXT</Response></Line>
+			<Line>Bring me 2 Red Potions.<Response>ACCEPT</Response></Line>
+		</Dialogue>
+	</Prompt>
+	<Progress>
+		<Dialogue>	
+			<Line>I don't think you've gotten me everything yet.<Response>OK</Response></Line>		
+		</Dialogue>
+	</Progress>
+	<Reward>
+		<EXP>420</EXP>
+		<Item_ID>4</Item_ID>
+		<Item_Amount>10</Item_Amount>
+		<Dialogue>
+			<Line>Thanks, you're awesome!<Response>COMPLETE</Response></Line>
+		</Dialogue>
+	</Reward>
+</Quest>
+<Quest id="1" name="Test XML Kill Quest">
+	<NPC_ID>0</NPC_ID>
+	<Type>KILL</Type>
+	<Description>Those mushrooms don't know what's coming for them...</Description>
+	<Level>1</Level>
+	<Prompt>	
+		<Enemy_ID>0</Enemy_ID>
+		<Enemy_Amount>5</Enemy_Amount>
+		<Dialogue>
+			<Line>God I hate Mushrooms.<Response>NEXT</Response></Line>
+			<Line>Go kill 5 of them.<Response>ACCEPT</Response></Line>
+		</Dialogue>
+	</Prompt>
+	<Progress>
+		<Dialogue>	
+			<Line>I don't think you've killed everything yet.<Response>OK</Response></Line>		
+		</Dialogue>
+	</Progress>
+	<Reward>
+		<EXP>420</EXP>
+		<Item_ID>0</Item_ID>
+		<Item_Amount>10</Item_Amount>
+		<Dialogue>
+			<Line>Thanks, you're awesome!<Response>COMPLETE</Response></Line>
+		</Dialogue>
+	</Reward>
+</Quest>
+</Quests>

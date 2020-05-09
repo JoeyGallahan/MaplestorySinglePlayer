@@ -1,0 +1,20 @@
+<Quest_Flags>
+	<Types>
+		<KILL>0</KILL>
+		<FETCH>1</FETCH>
+		<MULTI>2</MULTI>
+		<SPEAK>3</SPEAK>
+	</Types>
+	<Responses>
+		<NEXT>0</NEXT>
+		<OK>1</OK>
+		<ACCEPT>2</ACCEPT>
+		<COMPLETE>3</COMPLETE>
+	</Responses>
+	<Dialogue>
+		<AMT>0</AMT>
+		<ENEMY>1</ENEMY>
+		<ITEM>2</ITEM>
+		<NPC>3</NPC>
+	</Dialogue>
+</Quest_Flags>

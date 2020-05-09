@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
     UIEffects uiEffects;
     DialogueSelectionUI dialogueSelectionUI;
     DialogueUI actualDialogueUI;
+    QuestUI questUI;
 
     private void Awake()
     {
@@ -27,6 +28,8 @@ public class UIController : MonoBehaviour
         uiEffects = GameObject.FindGameObjectWithTag("EffectsCanvas").GetComponent<UIEffects>();
         dialogueSelectionUI = GameObject.FindGameObjectWithTag("DialogueCanvas").GetComponentInChildren<DialogueSelectionUI>();
         actualDialogueUI = GameObject.FindGameObjectWithTag("DialogueCanvas").GetComponentInChildren<DialogueUI>();
+
+        questUI = GameObject.FindGameObjectWithTag("QuestCanvas").GetComponentInChildren<QuestUI>();
     }
 
     // Start is called before the first frame update
@@ -40,6 +43,7 @@ public class UIController : MonoBehaviour
         ToggleCharacterUI();
         ToggleSkillsUI();
         ToggleInventory();
+        ToggleQuestUI();
 
         //We only want to update the AP texts/changes if it's actually showing. Should save a bit on resources
         if (playerCharacterUI.Showing())
@@ -118,15 +122,24 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void ToggleActualDialogue(bool maybe, int sceneID)
+    public void ToggleActualDialogue(bool maybe, int questID)
     {
         if (maybe)
         {
-            actualDialogueUI.OpenDialogue(sceneID);
+            actualDialogueUI.OpenDialogue(questID);
         }
         else
         {
             actualDialogueUI.CloseDialogue();
         }
+    }
+
+    private void ToggleQuestUI()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            questUI.Show(!questUI.Showing());
+        }
+
     }
 }

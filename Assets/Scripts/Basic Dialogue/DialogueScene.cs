@@ -49,6 +49,11 @@ public class DialogueScene
         get => dialogueLines;
     }
 
+    public void AddDialogueLine(DialogueLine line)
+    {
+        dialogueLines.Add(line);
+    }
+
     public DialogueLine GetLine(int index)
     {
         return dialogueLines[index];
