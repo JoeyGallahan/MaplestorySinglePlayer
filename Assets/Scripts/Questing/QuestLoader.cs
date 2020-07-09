@@ -180,7 +180,6 @@ public class QuestLoader
             }
             if (itemID > -1 && itemAmt > -1)
             {
-                Debug.Log("Item ID: " + itemID + " Amt: " + itemAmt);
                 quest.AddToRewards(itemID, itemAmt);
                 itemID = -1;
                 itemAmt = -1;

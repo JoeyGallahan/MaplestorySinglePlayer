@@ -8,6 +8,7 @@ public class Warrior : PlayerClass
     {
         className = "Warrior";
         mainAP = "str";
+        secondaryAP = "dex";
         hpModifier = 2.0f;
         mpModifier = 0.75f;
     }

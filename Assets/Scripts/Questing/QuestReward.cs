@@ -28,12 +28,19 @@ public class QuestReward
 
     public void GiveRewards()
     {
+        EventParam itemParams = new EventParam();
+
         foreach(KeyValuePair<int,int> kvp in itemReward)
         {
-            PlayerInventory.Instance.AddToInventory(kvp.Key, kvp.Value);
+            itemParams.paramItemID = kvp.Key;
+            itemParams.paramInt = kvp.Value;
 
-            PlayerCharacter.Instance.Experience += expReward;
+            EventManager.TriggerEvent("ITEM_PICKUP", itemParams);
         }
+
+        EventParam expParams = new EventParam();
+        expParams.paramInt = expReward;
+        EventManager.TriggerEvent("EXP_GAIN", expParams);
     }
 
 }

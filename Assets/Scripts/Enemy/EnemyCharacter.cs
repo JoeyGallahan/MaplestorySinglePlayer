@@ -25,6 +25,8 @@ public class EnemyCharacter : MonoBehaviour
     public float MaxPatrolDistance { get => maxPatrolDistance; }
     public float MoveSpeed { get => moveSpeed; }
     public float MaxFollowDistance { get => maxFollowDistance; }
+    public int EnemyID { get => enemyID; }
+    public string EnemyName { get => enemyName; }
 
     private void Awake()
     {
@@ -44,34 +46,35 @@ public class EnemyCharacter : MonoBehaviour
         //If a skill hits twice, it calls the TakeDamage() twice, which would in turn make it drop double the items and cause a whole bunch of issues.
         if (health <= 0 && !dead)
         {
-            health = 0;
-            animations.SetInteger("Health", 0);
-            dead = true;
-            enemySpawn = GetComponentInParent<EnemySpawn>();
-            enemySpawn.RemoveEnemy(this.gameObject);
             Die();
         }
     }
 
-    public int TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         health -= damage;
-        if (health <= 0 && !dead) //Dont want to return the experience twice (this can/should also be handled when the actual method is called, but this is just a safety check)
-        {
-            return experience;
-        }
-
-        return 0;
     }
 
     private void Die()
     {
+        EventParam deathParams = new EventParam();
+        deathParams.paramInt = experience;
+        deathParams.paramEnemyID = enemyID;
+        EventManager.TriggerEvent("ENEMY_DEATH", deathParams);
+        EventManager.TriggerEvent("EXP_GAIN", deathParams);
+
+        animations.SetInteger("Health", 0);
+        dead = true;
+        enemySpawn = GetComponentInParent<EnemySpawn>();
+        enemySpawn.RemoveEnemy(this.gameObject);
+
         inventory.DropItems(transform.position);
-        foreach(int qID in partOfQuests)
-        {
-            PlayerCharacter.Instance.AddToQuestEnemyCounter(qID, enemyID);
-        }
         Destroy(this.gameObject, animations.GetCurrentAnimatorStateInfo(0).length);
+    }
+
+    public bool CanDealDamage()
+    {
+        return !dead;
     }
 
 }

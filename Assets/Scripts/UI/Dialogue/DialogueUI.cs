@@ -8,6 +8,7 @@ public class DialogueUI : MonoBehaviour
 {
     [SerializeField]Button rightButton;
     TextMeshProUGUI dialogueLineText;
+    [SerializeField]TextMeshProUGUI dialogueNPCText;
     [SerializeField]DialogueScene currentScene;
     DialogueResponse currentResponse;
     [SerializeField]int currentLineIndex = 0;
@@ -44,6 +45,7 @@ public class DialogueUI : MonoBehaviour
 
         currentScene = QuestDB.Instance.GetQuestByID(questID).GetCurrentDialogueScene(); //get the scene that we clicked on
         currentQuestID = questID;
+        dialogueNPCText.SetText(NPCDB.Instance.GetNpcName(QuestDB.Instance.GetQuestByID(questID).NPCID));
         UpdateDialogueText();
         SetupResponse();
     }

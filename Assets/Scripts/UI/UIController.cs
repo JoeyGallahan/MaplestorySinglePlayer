@@ -77,12 +77,6 @@ public class UIController : MonoBehaviour
         playerCharacterUI.UpdateTexts();
     }
 
-    //Adds to the Gains UI
-    public void AddGain(string amount, string type)
-    {
-        gainsUI.AddGain(amount, type);
-    }
-
     //Shows and hides the character screen
     private void ToggleCharacterUI()
     {
@@ -110,11 +104,11 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void ToggleDialogueSelection(bool maybe, NpcCharacter npc)
+    public void ToggleDialogueSelection(bool maybe, int npcID)
     {
         if (maybe)
         {
-            dialogueSelectionUI.OpenSelection(npc);
+            dialogueSelectionUI.OpenSelection(npcID);
         }
         else
         {
@@ -136,7 +130,7 @@ public class UIController : MonoBehaviour
 
     private void ToggleQuestUI()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             questUI.Show(!questUI.Showing());
         }

@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public sealed class PlayerInventory : MonoBehaviour
 {
     private static PlayerInventory instance = null;
     private static readonly object padlock = new object();
+
+    Action<EventParam> itemPickupListener;
 
     PlayerInventory() { }
 
@@ -38,6 +41,9 @@ public sealed class PlayerInventory : MonoBehaviour
         inventoryUI = GameObject.FindGameObjectWithTag("InventoryCanvas").GetComponentInChildren<InventoryUI>();
 
         db = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
+
+        itemPickupListener = new Action<EventParam>(OnItemPickup);
+        EventManager.AddListener("ITEM_PICKUP", OnItemPickup);
     }
 
     //Returns whether or not an item actually exists in your inventory
@@ -52,21 +58,6 @@ public sealed class PlayerInventory : MonoBehaviour
         return itemIDsAndAmount[id];
     }
 
-    //Adds an item to your inventory
-    public void AddToInventory(int id, int amount = 1)
-    {
-        if(itemIDsAndAmount.ContainsKey(id))
-        {
-            itemIDsAndAmount[id] += amount;
-            inventoryUI.UpdateGridItemAmount(id, itemIDsAndAmount[id]);
-        }
-        else
-        {
-            itemIDsAndAmount.Add(id, amount);
-            inventoryUI.AddToGrid(id, amount);
-        }
-    }
-
     //Prints out all of the items in the dictionary incase there are any issues with the UI
     public void DebugInv()
     {
@@ -78,6 +69,20 @@ public sealed class PlayerInventory : MonoBehaviour
         }
 
         Debug.Log(inventory);
+    }
+
+    public void AddToInventory(int id, int amount = 1)
+    {
+        if (itemIDsAndAmount.ContainsKey(id))
+        {
+            itemIDsAndAmount[id] += amount;
+            inventoryUI.UpdateGridItemAmount(id, itemIDsAndAmount[id]);
+        }
+        else
+        {
+            itemIDsAndAmount.Add(id, amount);
+            inventoryUI.AddToGrid(id, amount);
+        }
     }
 
     //Removes an item from your inventory. Defaulted to removing 1, but can be customized for dropping more
@@ -95,5 +100,18 @@ public sealed class PlayerInventory : MonoBehaviour
                 itemIDsAndAmount.Remove(id); //Remove it from your inventory completely.
             }
         }
+    }
+
+    private void OnItemPickup(EventParam param)
+    {
+        int id = param.paramItemID;
+        int amount = param.paramInt;
+
+        if (amount <= 0)
+        {
+            amount = 1;
+        }
+
+        AddToInventory(id, amount);
     }
 }

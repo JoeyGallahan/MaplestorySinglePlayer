@@ -127,14 +127,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc1828480fbf13040b682949e7c6b8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyName: 
+  enemyID: 0
+  enemyName: Mushy
   experience: 100
   health: 3
   level: 1
   touchDamage: 10
   maxPatrolDistance: 5
-  moveSpeed: 5
+  moveSpeed: 2.5
   maxFollowDistance: 10
+  partOfQuests: 
   enemySpawn: {fileID: 0}
 --- !u!114 &1794735221110724174
 MonoBehaviour:
@@ -179,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 979ea4560fee2524da67bd2708ca996b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemIds: 000000000000000000000000
+  itemIds: 0000000006000000
 --- !u!114 &3949831815469510245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,10 +209,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nonEnvironmentCollisions: []
-  gravity: -0.2
+  gravity: -0.175
+  gravityMultiplier: 1.5
   velocity: {x: 0, y: 0, z: 0}
   grounded: 0
+  disableGroundedCheck: 0
   enableGravity: 1
+  itemMode: 0
   collisionRange: 0.15
   horizontalRayCount: 6
   verticalRayCount: 6

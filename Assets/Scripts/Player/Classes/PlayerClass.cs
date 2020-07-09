@@ -7,6 +7,7 @@ public class PlayerClass
 {
     [SerializeField] protected string className;
     [SerializeField] protected string mainAP;
+    [SerializeField] protected string secondaryAP;
     protected float hpModifier;
     protected float mpModifier;
 
@@ -21,6 +22,10 @@ public class PlayerClass
     public string MainAP
     {
         get => mainAP;
+    }
+    public string SecondaryAP
+    {
+        get => secondaryAP;
     }
     public float HPModifier
     {

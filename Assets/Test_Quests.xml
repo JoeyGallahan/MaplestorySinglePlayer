@@ -2,14 +2,14 @@
 <Quest id="0" name="Test XML Fetch Quest">
 	<NPC_ID>0</NPC_ID>
 	<Type>FETCH</Type>
-	<Description>Boy do I need some potions...</Description>
+	<Description>Mmm Mmm this'll be some good eatin'...</Description>
 	<Level>1</Level>
 	<Prompt>	
-		<Item_ID>0</Item_ID>
+		<Item_ID>6</Item_ID>
 		<Item_Amount>2</Item_Amount>
 		<Dialogue>
-			<Line>I sure could use a pick-me-up.<Response>NEXT</Response></Line>
-			<Line>Bring me 2 Red Potions.<Response>ACCEPT</Response></Line>
+			<Line>Did you know I make a great Mushy Stew?<Response>NEXT</Response></Line>
+			<Line>Bring me 2 Mushy Caps and I'll make you one.<Response>ACCEPT</Response></Line>
 		</Dialogue>
 	</Prompt>
 	<Progress>
@@ -19,8 +19,8 @@
 	</Progress>
 	<Reward>
 		<EXP>420</EXP>
-		<Item_ID>4</Item_ID>
-		<Item_Amount>10</Item_Amount>
+		<Item_ID>7</Item_ID>
+		<Item_Amount>1</Item_Amount>
 		<Dialogue>
 			<Line>Thanks, you're awesome!<Response>COMPLETE</Response></Line>
 		</Dialogue>

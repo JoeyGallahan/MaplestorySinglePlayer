@@ -11,6 +11,7 @@ public class ManaItem : UsableItem
     public override void Action()
     {
         UpdatePlayerData();
+        AudioController.Instance.PlayAudioClip(0);
 
         if (percentToRestore == 0)
         {

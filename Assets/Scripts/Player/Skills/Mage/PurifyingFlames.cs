@@ -21,13 +21,17 @@ public class PurifyingFlames : MultiTargetAttack
                 {
                     EnemyController enemyHit = targets[i].GetComponent<EnemyController>(); //Get an enemy
 
-                    int exp = enemyHit.TakeDamage(Mathf.CeilToInt(player.GetDamage() * (damagePercent / 100.0f)), -player.transform.right);
+                    //int exp = enemyHit.TakeDamage(Mathf.CeilToInt(player.GetDamage() * (damagePercent / 100.0f)), -player.transform.right);
 
+                    enemyHit.TakeDamage(Mathf.CeilToInt(player.GetDamage() * (damagePercent / 100.0f)), -player.transform.right);
+
+                    /*
                     if (exp != 0)
                     {
                         player.Experience += exp; //Add it to your player
                         uiController.AddGain(exp.ToString(), "XP"); //Show on the gains UI
                     }
+                    */
 
                     PlayEnemySkill();
                 }

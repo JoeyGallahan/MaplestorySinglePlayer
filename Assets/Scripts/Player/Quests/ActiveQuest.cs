@@ -43,7 +43,6 @@ public class ActiveQuest
                 idToAmount[1].Add(kvp.Key, PlayerInventory.Instance.GetAmountByID(kvp.Key));
                 if (idToAmount[1][kvp.Key] >= quest.ItemsRequired[kvp.Key])
                 {
-                    Debug.Log("Quest Completed wow so fast!");
                     quest.QuestFulfilled = true;
                 }
             }
@@ -56,16 +55,30 @@ public class ActiveQuest
 
     public void AddToEnemyProgress(int enemyID, int amt)
     {
-        idToAmount[0][enemyID] += amt;
+        if (!quest.QuestCompleted && idToAmount[0].ContainsKey(enemyID))
+        {
+            idToAmount[0][enemyID] += amt;
+            if (idToAmount[0][enemyID] >= quest.EnemiesRequired[enemyID])
+            {
+                quest.QuestFulfilled = true;
+            }
+        }
     }
     public void AddToItemProgress(int itemID, int amt)
     {
-        idToAmount[1][itemID] += amt;
-
-        if (idToAmount[1][itemID] >= quest.ItemsRequired[itemID])
+        if (!quest.QuestCompleted && idToAmount[1].ContainsKey(itemID))
         {
-            Debug.Log("Quest Completed!");
-            quest.QuestFulfilled = true;
+            idToAmount[1][itemID] += amt;
+
+            if (idToAmount[1][itemID] >= quest.ItemsRequired[itemID])
+            {
+                quest.QuestFulfilled = true;
+            }
         }
     }
+    public bool RequiresEnemy(int enemyID)
+    {
+        return idToAmount[0].ContainsKey(enemyID);
+    }
+
 }

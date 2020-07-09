@@ -8,6 +8,7 @@ public class Mage : PlayerClass
     {
         className = "Mage";
         mainAP = "int";
+        secondaryAP = "luk";
         hpModifier = 1.0f;
         mpModifier = 2.0f;
     }

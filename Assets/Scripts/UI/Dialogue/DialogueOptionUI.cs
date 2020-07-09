@@ -27,7 +27,7 @@ public class DialogueOptionUI : MonoBehaviour
     {
         int questID = GetComponent<QuestID>().ID;
 
-        uiController.ToggleDialogueSelection(false, null);
+        uiController.ToggleDialogueSelection(false, -1);
         uiController.ToggleActualDialogue(true, questID);
     }
 }

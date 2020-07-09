@@ -14,10 +14,10 @@ public class EnemyInventory : MonoBehaviour
         {
             GameObject item = (GameObject)Instantiate(db.GetItemByID(i).DropPrefab, position, Quaternion.identity);
 
-            float randomXForce = Random.Range(-5.0f, 5.0f);
+            float randomXForce = Random.Range(-2.5f, 2.5f);
 
             //Max them seem like they kind of burst out of the enemy
-            item.GetComponent<PhysicsObject>().AddForce(new Vector2(randomXForce, 5.0f) * Time.deltaTime);
+            item.GetComponent<PhysicsObject>().AddForce(new Vector2(randomXForce, 3.0f) * Time.deltaTime);
         }
     }
 }

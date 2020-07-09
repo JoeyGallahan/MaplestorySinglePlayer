@@ -31,7 +31,7 @@ public class ActivateHotkey : MonoBehaviour
                     item.Action(); //Perform the action associated with the item
                 }
                 else //If it's a skill
-                {
+                {                   
                     Skill skill = (Skill)skillDB.GetSkillByID(id); //Get the actual skill
                     skill.UseSkill(); //Use the skill
                 }

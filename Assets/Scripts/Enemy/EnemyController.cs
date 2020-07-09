@@ -64,7 +64,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public int TakeDamage(int damage, Vector2 dir)
+    public void TakeDamage(int damage, Vector2 dir)
     {
         Knockback(dir);
         damageUI.AddDamage(damage);
@@ -73,8 +73,9 @@ public class EnemyController : MonoBehaviour
         patrolling = false;
         waiting = false;
 
-        int exp = enemy.TakeDamage(damage);
+        enemy.TakeDamage(damage);
 
+        /*
         if (exp > 0)
         {
             physicsObject.SetVelocity(Vector3.zero);
@@ -82,6 +83,7 @@ public class EnemyController : MonoBehaviour
         }
 
         return exp;
+        */
     }
 
     private void Knockback(Vector2 dir)
@@ -94,36 +96,43 @@ public class EnemyController : MonoBehaviour
 
     private void Patrol()
     {
-        if (!patrolling) //If you're not patrolling
+        if (enemy.CanDealDamage())
         {
-            patrolling = true; //Now you are
-            patrolLocStart = transform.position; //Get the start location
-            moveLeft = !moveLeft; //Make it move the other way
-            curPatrolDistance = Random.Range(1.0f, enemy.MaxPatrolDistance);
-        }
+            if (!patrolling) //If you're not patrolling
+            {
+                patrolling = true; //Now you are
+                patrolLocStart = transform.position; //Get the start location
+                moveLeft = !moveLeft; //Make it move the other way
+                curPatrolDistance = Random.Range(1.0f, enemy.MaxPatrolDistance);
+            }
 
-        if (Vector2.Distance(patrolLocStart, transform.position) >= curPatrolDistance) //If the enemy has reached the end of their patrol range
-        {
-            patrolling = false; //reset the patrolling process
-            waiting = true; //patrol cooldown
-            physicsObject.SetVelX(0f); //stop them from moving
-        }
-        else
-        {
-            if (moveLeft && !physicsObject.LeftBlocked) //If the enemy is moving left and the left side is not blocked
+            if (Vector2.Distance(patrolLocStart, transform.position) >= curPatrolDistance) //If the enemy has reached the end of their patrol range
             {
-                physicsObject.SetVelX(-enemy.MoveSpeed * Time.deltaTime); //make them move left
-            }
-            else if (!moveLeft && !physicsObject.RightBlocked) //If the enemy is moving right and the right side is not blocked
-            {
-                physicsObject.SetVelX(enemy.MoveSpeed * Time.deltaTime); //make them move right
-            }
-            else
-            {
-                patrolling = false; //if you're blocked, reset the patrolling process
+                patrolling = false; //reset the patrolling process
                 waiting = true; //patrol cooldown
                 physicsObject.SetVelX(0f); //stop them from moving
             }
+            else
+            {
+                if (moveLeft && !physicsObject.LeftBlocked) //If the enemy is moving left and the left side is not blocked
+                {
+                    physicsObject.SetVelX(-enemy.MoveSpeed * Time.deltaTime); //make them move left
+                }
+                else if (!moveLeft && !physicsObject.RightBlocked) //If the enemy is moving right and the right side is not blocked
+                {
+                    physicsObject.SetVelX(enemy.MoveSpeed * Time.deltaTime); //make them move right
+                }
+                else
+                {
+                    patrolling = false; //if you're blocked, reset the patrolling process
+                    waiting = true; //patrol cooldown
+                    physicsObject.SetVelX(0f); //stop them from moving
+                }
+            }
+        }
+        else
+        {
+            physicsObject.SetVelX(0.0f);
         }
     }
 

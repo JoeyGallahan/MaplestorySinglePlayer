@@ -17,7 +17,6 @@ public class QuestSelect : MonoBehaviour, IPointerClickHandler
     {
         int id = GetComponentInChildren<QuestID>().ID;
         
-        ui.UpdateDescription(id);
-
+        ui.UpdateDescription(id, true);
     }
 }

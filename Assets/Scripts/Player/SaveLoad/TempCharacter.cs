@@ -7,11 +7,11 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class TempCharacter : MonoBehaviour
 {
-    public string classType = "Warrior";
+    public string classType = "";
     public int str = 0, dex = 0, intel = 0, luk = 0;
     public int remainingAP = 5;
     public int rollAP = 7;
-    public string characterName;
+    public string characterName = "";
     public bool rolled = false;
 
     public void updateAP(string apType, int amount)
@@ -36,8 +36,21 @@ public class TempCharacter : MonoBehaviour
 
     public void SaveCharacter()
     {
-        CharacterCreationSave.SaveCharacter(this);
+        if (CheckIfComplete())
+        {
+            CharacterCreationSave.SaveCharacter(this);
 
-        SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene("SampleScene");
+        }
+    }
+
+    private bool CheckIfComplete()
+    {
+        if (!characterName.Equals("") && !classType.Equals("") && remainingAP == 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

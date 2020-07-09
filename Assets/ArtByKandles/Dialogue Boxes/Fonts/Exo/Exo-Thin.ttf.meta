@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 7f8d47cf46394d941b4d0c9bd71c5616
+timeCreated: 1548653231
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Exo Thin
+  fontNames:
+  - Exo Thin
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

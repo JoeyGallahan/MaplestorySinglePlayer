@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public sealed class PlayerCharacter : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public sealed class PlayerCharacter : MonoBehaviour
 
     //Movement
     [SerializeField] private float moveSpeed = 5.0f;
+    [SerializeField] private float maxMoveSpeed = 5.0f;
     [SerializeField] private float jumpSpeed = 20.0f;
     [SerializeField] private float climbSpeed = 5.0f;
 
@@ -64,7 +66,11 @@ public sealed class PlayerCharacter : MonoBehaviour
     //Quests
     [SerializeField] public List<ActiveQuest> activeQuests = new List<ActiveQuest>();
 
-    
+    Action<EventParam> enemyDeathListener;
+    Action<EventParam> itemPickupListener;
+    Action<EventParam> expGainListener;
+
+
     public int MaxHealth
     {
         get => maxHealth;
@@ -118,6 +124,10 @@ public sealed class PlayerCharacter : MonoBehaviour
         {
             moveSpeed = value;
         }
+    }
+    public float MaxMoveSpeed
+    {
+        get => maxMoveSpeed;
     }
     public float JumpSpeed
     {
@@ -231,6 +241,16 @@ public sealed class PlayerCharacter : MonoBehaviour
 
         levelUpParticles = GetComponentInChildren<ParticleSystem>();
         LoadCharacterCreation();
+
+        //Events
+        enemyDeathListener = new Action<EventParam>(OnEnemyDeath);
+        EventManager.AddListener("ENEMY_DEATH", OnEnemyDeath);
+
+        itemPickupListener = new Action<EventParam>(OnItemPickup);
+        EventManager.AddListener("ITEM_PICKUP", OnItemPickup);
+
+        expGainListener = new Action<EventParam>(OnEXPGainEvent);
+        EventManager.AddListener("EXP_GAIN", OnEXPGainEvent);
     }
 
     public void TakeDamage(int damage)
@@ -239,14 +259,6 @@ public sealed class PlayerCharacter : MonoBehaviour
         if (curHealth < 0)
         {
             curHealth = 0;
-        }
-    }
-
-    private void LateUpdate()
-    {
-        if (experience >= experienceToNextLevel)
-        {
-            LevelUp();
         }
     }
 
@@ -289,17 +301,23 @@ public sealed class PlayerCharacter : MonoBehaviour
         return apPoints[playerClass.MainAP];
     }
 
+    public int GetSecondaryAPPoints()
+    {
+        return apPoints[playerClass.SecondaryAP];
+    }
+
     public int GetDamage()
     {
-        int dmg = Mathf.RoundToInt(Random.Range(baseDamage, maxDamage + 1));
+        int dmg = Mathf.RoundToInt(UnityEngine.Random.Range(baseDamage, maxDamage + 1));
 
         return dmg;
     }
 
     public void LevelUp()
     {
+        AudioController.Instance.PlayAudioClip(1);
         level++;
-        experience = 0;
+        experience -= experienceToNextLevel;
         experienceToNextLevel *= 2;
         remainingAPPoints += 5;
         UpdateDamageRange();
@@ -375,10 +393,32 @@ public sealed class PlayerCharacter : MonoBehaviour
         activeQuests.Add(new ActiveQuest(questID));
         questUI.AddToGrid(questID);
     }
-
-    public void AddToQuestEnemyCounter(int questID, int enemyID)
+    public void CompleteQuest(int questID)
     {
+        ActiveQuest q = null;
+        for (int i = 0; i < activeQuests.Count; i++)
+        {
+            if (activeQuests[i].quest.QuestID == questID)
+            {
+                q = activeQuests[i];
+            }
+        }
 
+        if (q != null)
+        {
+            activeQuests.Remove(q);
+        }
+    }
+
+    public void AddToQuestEnemyCounter(int enemyID)
+    {
+        foreach(ActiveQuest q in activeQuests)
+        {
+            if (q.RequiresEnemy(enemyID))
+            {
+                q.AddToEnemyProgress(enemyID, 1);
+            }
+        }
     }
     public void AddToQuestItemCounter(int itemID)
     {
@@ -413,5 +453,30 @@ public sealed class PlayerCharacter : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void GainEXP(int amt)
+    {
+        experience += amt;
+
+        while (experience >= experienceToNextLevel)
+        {
+            LevelUp();
+        }
+    }
+
+    private void OnEXPGainEvent(EventParam param)
+    {
+        GainEXP(param.paramInt);
+    }
+
+    private void OnEnemyDeath(EventParam param)
+    {
+        AddToQuestEnemyCounter(param.paramEnemyID);
+    }
+
+    private void OnItemPickup(EventParam param)
+    {
+        AddToQuestItemCounter(param.paramItemID);
     }
 }

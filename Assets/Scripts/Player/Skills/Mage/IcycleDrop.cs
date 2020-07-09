@@ -19,14 +19,18 @@ public class IcycleDrop : SingleTargetAttack
             {
                 EnemyController enemyHit = targets[0].GetComponent<EnemyController>(); //Get the enemy that we hit
 
-                int exp = enemyHit.TakeDamage(Mathf.CeilToInt(player.GetDamage() * (damagePercent / 100.0f)), -player.transform.right);
+                //int exp = enemyHit.TakeDamage(Mathf.CeilToInt(player.GetDamage() * (damagePercent / 100.0f)), -player.transform.right);
 
+                enemyHit.TakeDamage(Mathf.CeilToInt(player.GetDamage() * (damagePercent / 100.0f)), -player.transform.right);
+
+                /*
                 //If you killed it on your second hit
                 if (exp != 0)
                 {
                     player.Experience += exp; //Add the exp to your player
                     uiController.AddGain(exp.ToString(), "XP"); //Show on the gains UI
                 }
+                */
 
                 PlayEnemySkill();
             }

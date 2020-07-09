@@ -144,6 +144,16 @@ public class Quest
     {
         questCompleted = true;
         reward.GiveRewards();
+
+        PlayerCharacter.Instance.questUI.AddToGrid(questID);
+
+        if (ItemsRequired.Count > 0)
+        {
+            foreach(KeyValuePair<int, int> kvp in ItemsRequired)
+            {
+                PlayerInventory.Instance.RemoveItem(kvp.Key, kvp.Value);
+            }
+        }
     }
 
     public void AddToRequirements(int index, int id, int amt)

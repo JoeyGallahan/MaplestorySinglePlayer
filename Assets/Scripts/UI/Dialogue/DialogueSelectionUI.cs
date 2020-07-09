@@ -7,6 +7,7 @@ using TMPro;
 public class DialogueSelectionUI : MonoBehaviour
 {
     [SerializeField] GameObject dialogueOptionPrefab;
+    [SerializeField] TextMeshProUGUI dialogueNPCText;
     GameObject gridView;
     QuestDB questDB;
     [SerializeField] List<Quest> quests = new List<Quest>();
@@ -22,39 +23,25 @@ public class DialogueSelectionUI : MonoBehaviour
     {
         CloseSelection();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    
     public void CloseSelection()
     {
+        KillGrid();
+        quests = null;
         gameObject.SetActive(false);
     }
-    public void OpenSelection(NpcCharacter npc)
+    public void OpenSelection(int npcID)
     {
-        gameObject.SetActive(true);
-        
         //Get all of their relevant quest dialogues
-        quests = questDB.GetQuestsByNPCID(npc.NPCID);
-
-        foreach (Quest q in quests)
-        {
-            if (q.QuestCompleted)
-            {
-                quests.Remove(q);
-            }
-        }
+        quests = questDB.GetQuestsByNPCID(npcID);
+        dialogueNPCText.SetText(NPCDB.Instance.GetNpcName(npcID));
 
         UpdateGrid();
+        gameObject.SetActive(true);
     }
 
     private void UpdateGrid()
     {
-        KillGrid();
-        
         for (int i = 0; i < quests.Count; i++)
         {
             GameObject newObj;
@@ -73,6 +60,5 @@ public class DialogueSelectionUI : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-
     }
 }

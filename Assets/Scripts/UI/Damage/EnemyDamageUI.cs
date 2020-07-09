@@ -25,11 +25,7 @@ public class EnemyDamageUI : MonoBehaviour
 
     public void AddDamage(int amount)
     {
-        TextMeshPro damageText = textPrefab;
-
-        damageText.SetText(amount.ToString());
-
-        Vector3 position = damageText.transform.position + offset;
+        Vector3 position = textPrefab.transform.position + offset;
 
         if (damages.Count > 0)
         {
@@ -41,9 +37,10 @@ public class EnemyDamageUI : MonoBehaviour
             }
         }
 
-        TextMeshPro temp = Instantiate(damageText, position, Quaternion.identity);
+        TextMeshPro temp = Instantiate(textPrefab, position, Quaternion.identity);
         temp.transform.SetParent(this.transform, false);
         temp.transform.localPosition = position;
+        temp.SetText(amount.ToString());
 
         damages.Enqueue(temp);
 

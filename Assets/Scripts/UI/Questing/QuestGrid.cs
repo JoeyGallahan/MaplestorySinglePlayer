@@ -16,4 +16,20 @@ public class QuestGrid : MonoBehaviour
 
         newObj.GetComponentInChildren<QuestID>().ID = quest.QuestID;
     }
+
+    public void RemoveFromGrid(int questID)
+    {
+        List<QuestID> quests = new List<QuestID>(GetComponentsInChildren<QuestID>());
+
+        GameObject toRemove = null;
+        foreach(QuestID q in quests)
+        {
+            if (q.ID == questID)
+            {
+                toRemove = q.gameObject;
+            }
+        }
+
+        Destroy(toRemove);
+    }
 }

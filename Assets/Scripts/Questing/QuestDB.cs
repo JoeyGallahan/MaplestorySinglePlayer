@@ -52,7 +52,7 @@ public sealed class QuestDB : MonoBehaviour
 
         for (int i = 0; i < quests.Count; i++) //Go through our list of quests
         {
-            if (quests[i].NPCID == id) //If the ID matches the one we're looking for
+            if (quests[i].NPCID == id && !quests[i].QuestCompleted) //If the ID matches the one we're looking for
             {
                 npcquests.Add(quests[i]); //add it to the list
             }

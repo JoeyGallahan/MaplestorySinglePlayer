@@ -136,10 +136,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nonEnvironmentCollisions: []
-  gravity: -0.2
+  gravity: -0.1
   velocity: {x: 0, y: 0, z: 0}
   grounded: 0
+  disableGroundedCheck: 0
   enableGravity: 1
+  itemMode: 0
   collisionRange: 0.01
   horizontalRayCount: 4
   verticalRayCount: 4

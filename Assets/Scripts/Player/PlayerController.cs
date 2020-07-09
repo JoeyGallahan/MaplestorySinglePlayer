@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     Animator animations;
     PhysicsObject physicsObject;
     UIController uiController;
-    SkillDB skillDB;
 
     //Movement
     float horInput = 0.0f;
@@ -16,10 +15,16 @@ public class PlayerController : MonoBehaviour
     Quaternion facingLeft = Quaternion.Euler(Vector3.zero);
     Quaternion facingRight = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
+    //Wow fancy polish
+    [SerializeField] float jumpBufferTiming = 0.2f;
+    [SerializeField] float maxJumpBuffer = 0.2f;
+    [SerializeField] float coyoteTiming = 0.0f;
+    [SerializeField] float maxCoyoteTime = 0.2f;
+
     //States
-    bool climbing = false;
-    bool jumping = false;
-    bool touchingRope = false;
+    [SerializeField] bool climbing = false;
+    [SerializeField] bool jumping = false;
+    [SerializeField] bool touchingRope = false;
 
     //Taking Damage
     float damageTime;
@@ -57,7 +62,6 @@ public class PlayerController : MonoBehaviour
 
         inventory = GetComponent<PlayerInventory>();
         itemDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<ItemDB>();
-        skillDB = GameObject.FindGameObjectWithTag("GameController").GetComponent<SkillDB>();
         uiController = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
 
         weaponSlot = GameObject.FindGameObjectWithTag("Weapon");
@@ -83,14 +87,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         CheckSpecialCollisions();
-        Movement();
         PerformActions();
         UpdateTimings();
-    }
-
-    private void FixedUpdate()
-    {
-        Jump(); //Jump is causing issues by going extremely high with only minor drops in framerate so it's going here until it can learn to behave
+        if (canAttack)
+        {
+            Movement();
+            Jump();
+        }
+        else
+        {
+            physicsObject.SetVelX(0.0f);
+        }
     }
 
     private void LateUpdate()
@@ -104,11 +111,11 @@ public class PlayerController : MonoBehaviour
         HorizontalInput();
         VerticalInput();
         
-        physicsObject.SetVelX(horInput * Time.deltaTime);
+        physicsObject.SetVelX(horInput);
 
         if (climbing)
         {
-            physicsObject.SetVelY(verInput * Time.deltaTime);
+            physicsObject.SetVelY(verInput);
         }
     }
 
@@ -119,12 +126,12 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.RightArrow)) //If you press the key to move right
             {
-                horInput = PlayerCharacter.Instance.MoveSpeed; //Apply the movespeed to the horizontal input
+                horInput = PlayerCharacter.Instance.MoveSpeed * Time.deltaTime; //Apply the movespeed to the horizontal input
                 transform.rotation = facingRight; //Make the player face right
             }
             else if (Input.GetKey(KeyCode.LeftArrow)) //If you press the key to move left
             {
-                horInput = -PlayerCharacter.Instance.MoveSpeed; //Apply the movespeed to the horizontal input
+                horInput = -PlayerCharacter.Instance.MoveSpeed * Time.deltaTime; //Apply the movespeed to the horizontal input
                 transform.rotation = facingLeft; //Make the player face left
             }
             else
@@ -136,20 +143,45 @@ public class PlayerController : MonoBehaviour
 
     //Controls the player jumping
     private void Jump()
-    {
-        if (Input.GetKey(KeyCode.Space))
+    {        
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (physicsObject.grounded || climbing) //Don't want to jump if you're not on the ground or climbing
+            jumpBufferTiming = 0.0f;
+
+            if (climbing)
             {
                 jumping = false; //resets the jump variable for when you hit the ground
                 climbing = false; //reset the climbing because you just jumped off a rope
 
                 physicsObject.enableGravity = true; //Just in case you jumped off a rope
+                physicsObject.disableGroundedCheck = false;
 
                 physicsObject.grounded = false; //No longer on the ground
-                physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.deltaTime); //Jump
+                physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump
                 jumping = true; //you're now jumping
             }
+        }
+
+        if (!physicsObject.grounded && !climbing)
+        {
+            jumpBufferTiming += Time.deltaTime;
+            coyoteTiming += Time.deltaTime;
+        }
+        else if (!climbing)
+        {
+            coyoteTiming = 0.0f;
+            jumping = false;
+        }
+
+        if (!jumping && jumpBufferTiming <= maxJumpBuffer && coyoteTiming <= maxCoyoteTime)
+        {
+            climbing = false; //reset the climbing because you just jumped off a rope
+
+            physicsObject.enableGravity = true; //Just in case you jumped off a rope
+
+            physicsObject.grounded = false; //No longer on the ground
+            physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump
+            jumping = true; //you're now jumping
         }
     }
 
@@ -159,6 +191,7 @@ public class PlayerController : MonoBehaviour
         climbing = true;
         physicsObject.enableGravity = false;
         physicsObject.grounded = false;
+        physicsObject.disableGroundedCheck = true;
         horInput = 0f;
         verInput = 0f;
         physicsObject.SetVelocity(Vector3.zero);
@@ -175,7 +208,7 @@ public class PlayerController : MonoBehaviour
                 {
                     InitClimbing();
                 }
-                verInput = PlayerCharacter.Instance.ClimbSpeed; 
+                verInput = PlayerCharacter.Instance.ClimbSpeed * Time.deltaTime; 
             }
             else if (Input.GetKey(KeyCode.DownArrow))
             {
@@ -184,7 +217,7 @@ public class PlayerController : MonoBehaviour
                     InitClimbing();
                 }
 
-                verInput = -PlayerCharacter.Instance.ClimbSpeed;
+                verInput = -PlayerCharacter.Instance.ClimbSpeed * Time.deltaTime;
             }
             else
             {
@@ -198,11 +231,12 @@ public class PlayerController : MonoBehaviour
 
             if (verInput > 0) //If you were climbing up
             {
-                physicsObject.AddForce(new Vector3(0f, 20f * Time.deltaTime, 0f)); //Give the player a little boost so they can get up to the platform
+                physicsObject.AddForce(new Vector3(0f, PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime / 3.0f, 0f)); //Give the player a little boost so they can get up to the platform
             }
 
             verInput = 0f;
             physicsObject.enableGravity = true; //Reenable gravity
+            physicsObject.disableGroundedCheck = false;
         }
     }
 
@@ -214,6 +248,7 @@ public class PlayerController : MonoBehaviour
         {
             uiController.FadeToBlack(); //Fade out
             teleporting = true; //You are now actively teleporting
+            AudioController.Instance.PlayAudioClip(2);
         }
         else if (teleporting)
         {
@@ -255,7 +290,7 @@ public class PlayerController : MonoBehaviour
     //Determines if you can use a basic attack and will call the appropriate methods to do so
     private void Attack()
     {
-        if (canAttack) //If it is possible for you to do this
+        if (canAttack && !climbing) //If it is possible for you to do this
         {
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) //And you hit the proper keys
             {
@@ -283,7 +318,7 @@ public class PlayerController : MonoBehaviour
         if (PlayerCharacter.Instance.Equips.GetWeapon() != null) //If you have a weapon equipped
         {
             attackRange = PlayerCharacter.Instance.Equips.GetWeapon().AttackRange; //Update the range to the range of the weapon.
-            //We dont need to update the attack damage because that's already accounted for in the GetDamage() method
+                                                                                    //We dont need to update the attack damage because that's already accounted for in the GetDamage() method
         }
 
         RaycastHit2D hit = Physics2D.Raycast(weaponSlot.transform.position, -weaponSlot.transform.right, attackRange, enemyLayer); //Find an enemy within range
@@ -292,17 +327,9 @@ public class PlayerController : MonoBehaviour
         if (hit.transform != null)
         {
             EnemyController enemyHit = hit.transform.gameObject.GetComponent<EnemyController>(); //Get the enemy controller
-
-            int expGained = enemyHit.TakeDamage(attackDamage, -weaponSlot.transform.right); //Make the enemy take damage and get the exp earned from this
-
-            if (expGained > 0) //If you actually gained some exp
-            {
-                PlayerCharacter.Instance.Experience += expGained; //Add it to your player
-                uiController.AddGain(expGained.ToString(), "XP"); //Show it on the Gains UI
-            }
-
+            
+            enemyHit.TakeDamage(attackDamage, -weaponSlot.transform.right);
         }
-
     }
 
     //Pickup the item you are touching
@@ -313,11 +340,12 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 ItemID item = itemTouching.GetComponent<ItemID>();
-                Debug.Log(itemTouching.name);
-                uiController.AddGain(itemDB.GetItemName(item.itemID), "Item"); //Shows the item you picked up in the Gains UI
-                inventory.AddToInventory(item.itemID); //Adds the item to the inventory
                 item.Pickup(); //Removes the physical item from the scene
-                PlayerCharacter.Instance.AddToQuestItemCounter(item.itemID);
+
+                EventParam itemParams = new EventParam();
+                itemParams.paramItemID = item.itemID;
+                itemParams.paramInt = 1;
+                EventManager.TriggerEvent("ITEM_PICKUP", itemParams);
             }
         }
     }
@@ -426,12 +454,13 @@ public class PlayerController : MonoBehaviour
     //Take damage and get knocked back. For when you touched an enemy
     private void TakeTouchDamage(EnemyCharacter enemy)
     {
-        if (!damaged)
+        if (!damaged && enemy.CanDealDamage())
         {
             //Knockback
             physicsObject.grounded = false;
             physicsObject.SetVelY(0f);
-            Vector2 knockbackForce = Vector2.up * PlayerCharacter.Instance.JumpSpeed * Time.deltaTime;
+            Vector2 knockbackForce = Vector2.up * PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime / 3.0f;
+            knockbackForce.x = -Vector2.right.x * PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime / 3.0f;
             physicsObject.AddForce(knockbackForce);
 
             PlayerCharacter.Instance.TakeDamage(enemy.TouchDamage);

@@ -11,6 +11,7 @@ public class HealingItem : UsableItem
     public override void Action()
     {
         UpdatePlayerData();
+        AudioController.Instance.PlayAudioClip(0);
 
         if (percentToHeal == 0)
         {

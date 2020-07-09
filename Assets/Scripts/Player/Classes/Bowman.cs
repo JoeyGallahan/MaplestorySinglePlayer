@@ -8,6 +8,7 @@ public class Bowman : PlayerClass
     {
         className = "Bowman";
         mainAP = "dex";
+        secondaryAP = "str";
         hpModifier = 0.75f;
         mpModifier = 1.0f;
     }
