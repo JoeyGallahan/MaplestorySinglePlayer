@@ -12,11 +12,11 @@ public class PlayerController : MonoBehaviour
     //Movement
     float horInput = 0.0f;
     float verInput = 0.0f;
-    Quaternion facingLeft = Quaternion.Euler(Vector3.zero);
-    Quaternion facingRight = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    Quaternion facingRight = Quaternion.Euler(Vector3.zero);
+    Quaternion facingLeft = Quaternion.Euler(0.0f, 180.0f, 0.0f); 
 
-    //Wow fancy polish
-    [SerializeField] float jumpBufferTiming = 0.2f;
+     //Wow fancy polish
+     [SerializeField] float jumpBufferTiming = 0.2f;
     [SerializeField] float maxJumpBuffer = 0.2f;
     [SerializeField] float coyoteTiming = 0.0f;
     [SerializeField] float maxCoyoteTime = 0.2f;
