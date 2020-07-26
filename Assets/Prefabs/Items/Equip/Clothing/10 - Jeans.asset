@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 719ba24ae6e81e3418b66f39fa7d4894, type: 3}
+  m_Name: 10 - Jeans
+  m_EditorClassIdentifier: 
+  id: 10
+  itemCategory: 0
+  itemName: 
+  sellPrice: 0
+  dropChance: 0
+  uiPrefab: {fileID: 8627643367080654419, guid: 9382f73aa4ce5e940b2f3bf1a8810759,
+    type: 3}
+  dropPrefab: {fileID: 0}
+  requiredStr: 3
+  requiredDex: 3
+  requiredInt: 3
+  requiredLuk: 3
+  equippedPrefab: {fileID: 7531985866546437601, guid: 4fd1331e18cfebd43acfbe3a7842ba8e,
+    type: 3}
+  clothingType:
+    clothingStyle: 2
+    typeName: Bottom
+    classCanEquip: Mage

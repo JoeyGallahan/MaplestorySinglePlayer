@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 719ba24ae6e81e3418b66f39fa7d4894, type: 3}
+  m_Name: 9 - WizardHat
+  m_EditorClassIdentifier: 
+  id: 9
+  itemCategory: 0
+  itemName: Wizard Hat
+  sellPrice: 0
+  dropChance: 0
+  uiPrefab: {fileID: 3139130324115838889, guid: a90e861bc81fb864da5d4386dc4bac31,
+    type: 3}
+  dropPrefab: {fileID: 0}
+  requiredStr: 3
+  requiredDex: 3
+  requiredInt: 3
+  requiredLuk: 3
+  equippedPrefab: {fileID: 8718736817782699242, guid: e69089df1cbb7d948a9a85db50423c28,
+    type: 3}
+  clothingType:
+    clothingStyle: 0
+    typeName: Head
+    classCanEquip: Mage

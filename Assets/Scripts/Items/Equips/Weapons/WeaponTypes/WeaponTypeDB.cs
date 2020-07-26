@@ -21,8 +21,6 @@ public class WeaponTypeDB : MonoBehaviour
 
     public List<WeaponType> GetWeaponTypesForClass(string className)
     {
-        List<WeaponType> weapons = new List<WeaponType>();
-
         for (int i = 0; i < weapons.Count; i++)
         {
             if (weapons[i].ClassName.Equals(className))

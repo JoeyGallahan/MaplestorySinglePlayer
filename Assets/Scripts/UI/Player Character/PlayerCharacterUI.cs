@@ -14,6 +14,9 @@ public class PlayerCharacterUI : MonoBehaviour
 
     //Equips
     EquipmentUI weaponEquip;
+    EquipmentUI topEquip;
+    EquipmentUI headEquip;
+    EquipmentUI bottomEquip;
 
     TextMeshProUGUI characterName;
     TextMeshProUGUI remainingAP;
@@ -40,6 +43,9 @@ public class PlayerCharacterUI : MonoBehaviour
         lukAmountText = GameObject.FindGameObjectWithTag("LukAmount").GetComponent<TextMeshProUGUI>();
 
         weaponEquip = GameObject.FindGameObjectWithTag("EquipWeapon").GetComponent<EquipmentUI>();
+        topEquip = GameObject.FindGameObjectWithTag("EquipBody").GetComponent<EquipmentUI>();
+        headEquip = GameObject.FindGameObjectWithTag("EquipHead").GetComponent<EquipmentUI>();
+        bottomEquip = GameObject.FindGameObjectWithTag("EquipBottom").GetComponent<EquipmentUI>();
     }
 
     private void Start()
@@ -107,6 +113,12 @@ public class PlayerCharacterUI : MonoBehaviour
         switch (type)
         {
             case "Weapon": weaponEquip.AddEquip(id);
+                break;
+            case "Top": topEquip.AddEquip(id);
+                break;
+            case "Head": headEquip.AddEquip(id);
+                break;
+            case "Bottom": bottomEquip.AddEquip(id);
                 break;
         }
 

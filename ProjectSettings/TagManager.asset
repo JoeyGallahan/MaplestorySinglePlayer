@@ -54,6 +54,10 @@ TagManager:
   - WallLeft
   - SpawnPoint
   - QuestCanvas
+  - Top
+  - Head
+  - Bottom
+  - EquipBottom
   layers:
   - Default
   - TransparentFX

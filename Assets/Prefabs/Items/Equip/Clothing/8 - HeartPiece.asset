@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 719ba24ae6e81e3418b66f39fa7d4894, type: 3}
+  m_Name: 8 - HeartPiece
+  m_EditorClassIdentifier: 
+  id: 8
+  itemCategory: 0
+  itemName: HeartPiece
+  sellPrice: 0
+  dropChance: 0
+  uiPrefab: {fileID: 7408661125359757009, guid: 6eb6ab210dc964b4daeaa3fb219f0dbc,
+    type: 3}
+  dropPrefab: {fileID: 0}
+  requiredStr: 0
+  requiredDex: 0
+  requiredInt: 3
+  requiredLuk: 0
+  equippedPrefab: {fileID: 5458018479908306873, guid: 74b2ec33c83689744a43e77258d2ce4b,
+    type: 3}
+  clothingType:
+    clothingStyle: 1
+    typeName: Top
+    classCanEquip: Mage

@@ -74,6 +74,9 @@ public class PlayerController : MonoBehaviour
     {
         inventory.AddToInventory(0, 5);
         inventory.AddToInventory(4, 5);
+        inventory.AddToInventory(8, 1);
+        inventory.AddToInventory(9, 1);
+        inventory.AddToInventory(10, 1);
 
         physicsObject.gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         jumpSpeed = Mathf.Abs(physicsObject.gravity) * timeToJumpApex;
@@ -197,7 +200,6 @@ public class PlayerController : MonoBehaviour
             //physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump            
             //jumpSpeed = -(maxJumpHeight * timeToJumpApex)/physicsObject.gravity * Time.deltaTime;
             physicsObject.SetVelY(jumpSpeed);
-            Debug.Log(jumpSpeed);
             jumping = true; //you're now jumping
         }
     }
