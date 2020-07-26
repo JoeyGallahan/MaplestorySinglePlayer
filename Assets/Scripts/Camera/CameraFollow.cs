@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
+    /*
     Transform player;
     [SerializeField]Vector3 offset;
     Vector2 lastLocation;
@@ -63,6 +64,89 @@ public class CameraFollow : MonoBehaviour
         {
             //Debug.Log("ExitRight");
             canFollowRight = true;
+        }
+    }
+    */
+
+    public Vector2 focusAreaSize;
+    FocusArea focusArea;
+    public GameObject target;
+    BoxCollider2D collider;
+
+    public float verticalOffset;
+
+    private void Start()
+    {
+        collider = target.GetComponent<BoxCollider2D>();
+        focusArea = new FocusArea(collider.bounds, focusAreaSize);
+    }
+
+    private void LateUpdate()
+    {
+        focusArea.Update(collider.bounds);
+
+        Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
+
+        transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(1, 0, 0, 0.5f);
+        Gizmos.DrawCube(focusArea.center, focusAreaSize);
+    }
+
+    struct FocusArea
+    {
+        public Vector2 center;
+        float left, right, top, bottom;
+        public Vector2 velocity;
+
+        public FocusArea(Bounds targetBounds, Vector2 size)
+        {
+            left = targetBounds.center.x - size.x / 2.0f;
+            right = targetBounds.center.x + size.x / 2.0f;
+
+            bottom = targetBounds.min.y;
+            top = targetBounds.min.y + size.y;
+
+            center = new Vector2((left + right) / 2.0f, (top + bottom) / 2.0f);
+
+            velocity = Vector2.zero;
+        }
+
+        public void Update(Bounds targetBounds)
+        {
+            float shiftX = 0.0f;
+            float shiftY = 0.0f;
+
+            //horizontal
+            if(targetBounds.min.x < left)
+            {
+                shiftX = targetBounds.min.x - left;
+            }
+            else if (targetBounds.max.x > right)
+            {
+                shiftX = targetBounds.max.x - right;
+            }
+
+            //Vertical
+            if (targetBounds.min.y < bottom)
+            {
+                shiftY = targetBounds.min.y - bottom;
+            }
+            else if (targetBounds.max.y > top)
+            {
+                shiftY = targetBounds.max.y - top;
+            }
+
+            left += shiftX;
+            right += shiftX;
+            bottom += shiftY;
+            top += shiftY;
+
+            center = new Vector2((left + right) / 2.0f, (top + bottom) / 2.0f);
+            velocity = new Vector2(shiftX, shiftY);
         }
     }
 }

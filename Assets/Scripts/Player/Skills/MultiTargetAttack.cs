@@ -19,7 +19,7 @@ public abstract class MultiTargetAttack : Skill
 
         UpdatePlayerData(); //Get where the player is rn. Scriptable objects are weird and dont update the variables automatically like components so we have to do it manually.
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(player.transform.position, -player.transform.right, range, enemyLayer); //Get the first enemy in our path
+        RaycastHit2D[] hits = Physics2D.RaycastAll(player.transform.position, player.transform.right, range, enemyLayer); //Get the first enemy in our path
         int ctr = 0;
         foreach(RaycastHit2D hit in hits)
         {

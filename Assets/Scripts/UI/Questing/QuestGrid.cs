@@ -15,6 +15,7 @@ public class QuestGrid : MonoBehaviour
         questName.SetText(quest.Title);
 
         newObj.GetComponentInChildren<QuestID>().ID = quest.QuestID;
+        newObj.transform.SetAsFirstSibling(); //We want the new quest to show up as the first on the list
     }
 
     public void RemoveFromGrid(int questID)

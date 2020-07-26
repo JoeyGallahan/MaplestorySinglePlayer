@@ -34,7 +34,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     //Movement
     [SerializeField] private float moveSpeed = 5.0f;
     [SerializeField] private float maxMoveSpeed = 5.0f;
-    [SerializeField] private float jumpSpeed = 20.0f;
+    //[SerializeField] private float jumpSpeed = 20.0f;
     [SerializeField] private float climbSpeed = 5.0f;
 
     //Player specifics
@@ -46,7 +46,7 @@ public sealed class PlayerCharacter : MonoBehaviour
     //Attacking
     private int baseDamage = 3;
     private int maxDamage = 3;
-    [SerializeField]private float baseAttackRange = 0.25f;
+    [SerializeField]private float baseAttackRange = 0.5f;
     private float baseAttackSpeed = 1.0f;
 
     //Levels
@@ -69,7 +69,6 @@ public sealed class PlayerCharacter : MonoBehaviour
     Action<EventParam> enemyDeathListener;
     Action<EventParam> itemPickupListener;
     Action<EventParam> expGainListener;
-
 
     public int MaxHealth
     {
@@ -128,15 +127,6 @@ public sealed class PlayerCharacter : MonoBehaviour
     public float MaxMoveSpeed
     {
         get => maxMoveSpeed;
-    }
-    public float JumpSpeed
-    {
-        get => jumpSpeed;
-
-        set
-        {
-            jumpSpeed = value;
-        }
     }
     public float ClimbSpeed
     {

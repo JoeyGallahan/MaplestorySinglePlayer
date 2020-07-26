@@ -12,6 +12,8 @@ public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     HotkeyController hotkeyController; //For dragging onto a hotkey
     bool dragging = false; //Used so we can check overlaps more often.
 
+    BoxCollider2D skillCollider;
+
     private void Awake()
     {
         skillID = GetComponent<SkillID>();
@@ -56,7 +58,7 @@ public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void OnEndDrag(PointerEventData eventData)
     {
         CheckForOverlap(); //We want a very final check just to be sure
-
+        
         //If you've landed on a hotkey slot
         if (parent.tag.Equals("Hotkey"))
         {
@@ -81,17 +83,40 @@ public class SkillDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         //Creates a rect based on our RectTransform that we've stored
         Rect rect1 = new Rect(draggedRect.localPosition.x, draggedRect.localPosition.y, draggedRect.rect.width, draggedRect.rect.height);
 
+        List<Rect> allOverlapping = new List<Rect>();
+
         //Checks all the hotkey slots for an overlap
         foreach (Rect rect2 in hotkeyController.hotkeyRects)
         {
-            //bool overlapping = (rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y);
-            //Debug.Log(rect2.x + "," + rect2.y + " : " + overlapping);
             //Make sure it's not overlapping itself
-            if (!rect1.Equals(rect2) && rect1.Overlaps(rect2, true))
+            if (!rect1.Equals(rect2) && rect1.Overlaps(rect2, false))
             {
-                parent = hotkeyController.hotkeyUIs[rect2].transform; //Sets the parent of the dragged item to the transform of the hotkey slot
-                return;
+                allOverlapping.Add(rect2);
             }
         }
+
+        if (allOverlapping.Count > 0)
+        {
+            int bestOverlap = GetBestOverlap(rect1, allOverlapping);
+            parent = hotkeyController.hotkeyUIs[allOverlapping[bestOverlap]].transform; //Sets the parent of the dragged item to the transform of the hotkey slot
+        }
+    }
+
+    private int GetBestOverlap(Rect skill, List<Rect> hotkeys)
+    {
+        int bestHotkeyindex = 0;
+
+        for (int i = 0; i < hotkeys.Count; i++)
+        {
+            float amtOverlap = Vector2.Distance(skill.min, hotkeys[i].min) + Vector2.Distance(skill.max, hotkeys[i].max);
+            float amtOverlapBest = Vector2.Distance(skill.min, hotkeys[bestHotkeyindex].min) + Vector2.Distance(skill.max, hotkeys[bestHotkeyindex].max);
+            
+            if (amtOverlap < amtOverlapBest)
+            {
+                bestHotkeyindex = i;
+            }
+        }
+
+        return bestHotkeyindex;
     }
 }

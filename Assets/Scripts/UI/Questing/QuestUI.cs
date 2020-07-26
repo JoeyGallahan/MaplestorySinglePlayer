@@ -11,11 +11,13 @@ public class QuestUI : MonoBehaviour
     [SerializeField] QuestGrid completedQuests;
     [SerializeField] GameObject questGridPrefab;
     [SerializeField] GameObject inProgressParent;
+    [SerializeField] GameObject descriptionParent;
     [SerializeField] GameObject completedParent;
     [SerializeField] TextMeshProUGUI questName;
     [SerializeField] TextMeshProUGUI questReqLvl;
     [SerializeField] TextMeshProUGUI questDesc;
     [SerializeField] RequirementsGrid requirementsGrid;
+    [SerializeField] TextMeshProUGUI placeHolderText;
     int selectedQuestID = -1;
 
     private void Awake()
@@ -26,12 +28,15 @@ public class QuestUI : MonoBehaviour
     void Start()
     {
         Show(false);
+        inProgressParent.SetActive(false);
+        completedParent.SetActive(false);
+        descriptionParent.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (selectedQuestID != -1)
+        if (selectedQuestID != -1 && parentObj.activeInHierarchy)
         {
             UpdateDescription(selectedQuestID);
         }
@@ -85,10 +90,19 @@ public class QuestUI : MonoBehaviour
     public void AddToGrid(int id)
     {
         Quest quest = QuestDB.Instance.GetQuestByID(id);
+        if(!inProgressParent.activeInHierarchy)
+        {
+            placeHolderText.gameObject.SetActive(false);
+            inProgressParent.SetActive(true);
+            completedParent.SetActive(true);
+            descriptionParent.SetActive(true);
+        }
 
         if (!quest.QuestCompleted)
         {
             inProgressQuests.AddToGrid(questGridPrefab, quest);
+            selectedQuestID = id;
+            UpdateDescription(id, true);
         }
         else
         {

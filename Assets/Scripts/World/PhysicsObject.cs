@@ -7,9 +7,11 @@ public class PhysicsObject : MonoBehaviour
     public List<GameObject> nonEnvironmentCollisions;
 
     //Forces on the object
-    [SerializeField] float gravity = -0.2f;
+    public float gravity = -0.2f;
     [SerializeField] float gravityMultiplier = 1.5f;
     [SerializeField] Vector3 velocity = Vector3.zero;
+
+    [SerializeField]float skinWidth = 0.015f;
 
     //States
     private bool leftBlocked = false, rightBlocked = false;
@@ -49,8 +51,7 @@ public class PhysicsObject : MonoBehaviour
         nonEnvironmentCollisions = new List<GameObject>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         if (!itemMode || itemMode && !grounded)
         {
@@ -64,9 +65,14 @@ public class PhysicsObject : MonoBehaviour
                 CheckLeftCollision();
                 CheckRightCollision();
             }
-            ApplyPhysics();
-            ApplyGravity();
         }
+        ApplyPhysics();
+        ApplyGravity();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
     }
 
     void ResetCollisions()
@@ -95,6 +101,7 @@ public class PhysicsObject : MonoBehaviour
                         if (hit.collider.gameObject.layer == environmentLayer && hit.collider.tag.Equals("Platform")) //If it's in the environment layer
                         {
                             velocity.y = -hit.distance;//snaps the object to the ground exactly where the ray hit
+
                             groundedThisFrame = true; //it's now grounded
                         }
                         else
@@ -249,11 +256,11 @@ public class PhysicsObject : MonoBehaviour
         {
             if (velocity.y < 0 && velocity.y >= gravity)
             {
-                AddForce(new Vector3(0f, gravity * gravityMultiplier * Time.fixedDeltaTime, 0f)); //Add the gravity force to the object 
+                AddForce(new Vector3(0f, gravity * gravityMultiplier * Time.deltaTime, 0f)); //Add the gravity force to the object 
             }
             else if (velocity.y >= gravity)
             {
-                AddForce(new Vector3(0f, gravity * Time.fixedDeltaTime, 0f)); //Add the gravity force to the object 
+                AddForce(new Vector3(0f, gravity * Time.deltaTime, 0f)); //Add the gravity force to the object 
             }
             else if (velocity.y < gravity)
             {
@@ -272,6 +279,7 @@ public class PhysicsObject : MonoBehaviour
     void UpdateRaycastOrigins()
     {
         Bounds bounds = GetBounds();
+        bounds.Expand(skinWidth * 2f);
 
         raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
         raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);

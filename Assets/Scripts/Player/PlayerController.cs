@@ -12,8 +12,11 @@ public class PlayerController : MonoBehaviour
     //Movement
     float horInput = 0.0f;
     float verInput = 0.0f;
+    [SerializeField] float timeToJumpApex;
+    [SerializeField] float maxJumpHeight;
     Quaternion facingRight = Quaternion.Euler(Vector3.zero);
-    Quaternion facingLeft = Quaternion.Euler(0.0f, 180.0f, 0.0f); 
+    Quaternion facingLeft = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    float jumpSpeed;
 
      //Wow fancy polish
      [SerializeField] float jumpBufferTiming = 0.2f;
@@ -71,7 +74,9 @@ public class PlayerController : MonoBehaviour
     {
         inventory.AddToInventory(0, 5);
         inventory.AddToInventory(4, 5);
-        
+
+        physicsObject.gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpSpeed = Mathf.Abs(physicsObject.gravity) * timeToJumpApex;
         switch (PlayerCharacter.Instance.ClassName)
         {
             case "Warrior":
@@ -86,9 +91,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckSpecialCollisions();
         PerformActions();
         UpdateTimings();
+        if (canAttack)
+        {
+            Jump();
+        }
+    }
+
+    private void FixedUpdate()
+    {
         if (canAttack)
         {
             Movement();
@@ -98,6 +110,7 @@ public class PlayerController : MonoBehaviour
         {
             physicsObject.SetVelX(0.0f);
         }
+        CheckSpecialCollisions();
     }
 
     private void LateUpdate()
@@ -126,12 +139,12 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.RightArrow)) //If you press the key to move right
             {
-                horInput = PlayerCharacter.Instance.MoveSpeed * Time.deltaTime; //Apply the movespeed to the horizontal input
+                horInput = PlayerCharacter.Instance.MoveSpeed * Time.fixedDeltaTime; //Apply the movespeed to the horizontal input
                 transform.rotation = facingRight; //Make the player face right
             }
             else if (Input.GetKey(KeyCode.LeftArrow)) //If you press the key to move left
             {
-                horInput = -PlayerCharacter.Instance.MoveSpeed * Time.deltaTime; //Apply the movespeed to the horizontal input
+                horInput = -PlayerCharacter.Instance.MoveSpeed * Time.fixedDeltaTime; //Apply the movespeed to the horizontal input
                 transform.rotation = facingLeft; //Make the player face left
             }
             else
@@ -157,7 +170,8 @@ public class PlayerController : MonoBehaviour
                 physicsObject.disableGroundedCheck = false;
 
                 physicsObject.grounded = false; //No longer on the ground
-                physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump
+                //physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump
+                physicsObject.SetVelY(jumpSpeed);
                 jumping = true; //you're now jumping
             }
         }
@@ -180,7 +194,10 @@ public class PlayerController : MonoBehaviour
             physicsObject.enableGravity = true; //Just in case you jumped off a rope
 
             physicsObject.grounded = false; //No longer on the ground
-            physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump
+            //physicsObject.SetVelY(PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime); //Jump            
+            //jumpSpeed = -(maxJumpHeight * timeToJumpApex)/physicsObject.gravity * Time.deltaTime;
+            physicsObject.SetVelY(jumpSpeed);
+            Debug.Log(jumpSpeed);
             jumping = true; //you're now jumping
         }
     }
@@ -230,8 +247,8 @@ public class PlayerController : MonoBehaviour
             physicsObject.SetVelY(0f); //reset your velocity
 
             if (verInput > 0) //If you were climbing up
-            {
-                physicsObject.AddForce(new Vector3(0f, PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime / 3.0f, 0f)); //Give the player a little boost so they can get up to the platform
+            {              
+                physicsObject.AddForce(new Vector3(0f, PlayerCharacter.Instance.ClimbSpeed * Time.fixedDeltaTime / 3.0f, 0f)); //Give the player a little boost so they can get up to the platform
             }
 
             verInput = 0f;
@@ -367,7 +384,6 @@ public class PlayerController : MonoBehaviour
         UpdateAttackTime();
     }
 
-
     //Updates the time since you were last damaged by an enemy. This prevents the player from basically being spam-attacked
     private void UpdateDamageTime()
     {
@@ -459,8 +475,8 @@ public class PlayerController : MonoBehaviour
             //Knockback
             physicsObject.grounded = false;
             physicsObject.SetVelY(0f);
-            Vector2 knockbackForce = Vector2.up * PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime / 3.0f;
-            knockbackForce.x = -Vector2.right.x * PlayerCharacter.Instance.JumpSpeed * Time.fixedDeltaTime / 3.0f;
+            Vector2 knockbackForce = Vector2.up * PlayerCharacter.Instance.MoveSpeed * Time.fixedDeltaTime / 3.0f;
+            knockbackForce.x = -Vector2.right.x * PlayerCharacter.Instance.MoveSpeed * Time.fixedDeltaTime / 3.0f;
             physicsObject.AddForce(knockbackForce);
 
             PlayerCharacter.Instance.TakeDamage(enemy.TouchDamage);
